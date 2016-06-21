@@ -1,10 +1,14 @@
 'use strict';
 
+import 'whatwg-fetch';
 import $rdf from 'rdflib';
+import path from 'path';
+import _ from 'lodash';
 import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import Namespaces from '../constants/namespaces';
-const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED } = Actions;
+const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED } = Actions;
 const { ACL, DCT, FOAF, UI } = Namespaces;
 
 function profileFetchSuccess(user) {
@@ -17,6 +21,29 @@ function profileFetchSuccess(user) {
 function profileFetchFailed(error) {
   return {
     type: PROFILE_GET_FAILED,
+    error,
+  };
+}
+
+function profileUpdateSuccess(item, prop) {
+  return {
+    type: PROFILE_UPDATE_SUCCESS,
+    user: {
+      [prop]: item,
+    },
+  };
+}
+
+function profileUpdateFailed(error) {
+  return {
+    type: PROFILE_UPDATE_FAILED,
+    error,
+  };
+}
+
+function profileImageUploadFailed(error) {
+  return {
+    type: PROFILE_IMAGE_UPLOAD_FAILED,
     error,
   };
 }
@@ -53,7 +80,7 @@ export function profileFetch(webId) {
 
       // add source
       let docName = g.statementsMatching($rdf.sym(docUri), new DCT('title'))[0];
-      docName = docName ? docName.object.value : docUri;
+      docName = docName ? docName.object.value : 'Public Profile';
 
       if (xhr.getResponseHeader('Link')) {
         const lh = parseLinkHeader(xhr.getResponseHeader('Link'));
@@ -85,26 +112,87 @@ export function profileFetch(webId) {
   };
 }
 
-export function profileUpdate(value, item) {
+export function profileUpdate(value, item, prop, source) {
   return dispatch => {
     let query = '';
     let graphUri = '';
+    const newS = _.cloneDeep(item);
+    const itemProp = item.object.hasOwnProperty('uri') ? 'uri' : 'value';
 
-    if (item.object.value) {
+    if (item.object[itemProp]) {
       query += `DELETE DATA { ${item.toNT()} }`;
-      graphUri = item.source;
+      graphUri = source.uri;
 
       if (!!value) query += ' ;\n';
     }
 
     if (!!value) {
-      query += `INSERT DATA { ${item.toNT()} }`;
-      graphUri = item.source;
+      newS.object[itemProp] = newS.value = value;
+      newS.why.uri = source.uri;
+      query += `INSERT DATA { ${newS.toNT()} }`;
+      graphUri = source.uri;
+    } else {
+      newS.object[itemProp] = newS.value = value;
     }
 
+    fetch(graphUri, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/sparql-update',
+      },
+      body: query,
+    }).then(() => {
+      dispatch(profileUpdateSuccess(newS, prop));
+    }).catch((err) => {
+      dispatch(profileUpdateFailed(err));
+    });
+  };
+}
 
-    // just to get rid of linting bugs
-    // doesn't do anything at all
-    dispatch(graphUri);
+function uploadNewImage(newUrl, file) {
+  return fetch(newUrl, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': file.type,
+    },
+    body: file,
+  });
+}
+
+function deleteOldImage(oldUrl) {
+  return fetch(oldUrl, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+}
+
+export function profileImageUpload(file, item, prop, source) {
+  return dispatch => {
+    const picUrl = `${path.dirname(source.uri)}/${file.name}`;
+    const fetches = [uploadNewImage(picUrl, file)];
+
+    if (item.object.uri || item.object.value) {
+      fetches.push(deleteOldImage(item.object.uri || item.object.value));
+    }
+
+    Promise.all(fetches).then(() => {
+      dispatch(profileUpdate(picUrl, item, prop, source));
+    }).catch((err) => {
+      dispatch(profileImageUploadFailed(err));
+    });
+  };
+}
+
+export function profileImageDelete(item, prop, source) {
+  return dispatch => {
+    const deleteUrl = item.object.uri || item.object.value;
+
+    deleteOldImage(deleteUrl).then(() => {
+      dispatch(profileUpdate(undefined, item, prop, source));
+    }).catch((err) => {
+      dispatch(profileImageUploadFailed(err));
+    });
   };
 }

@@ -40,7 +40,7 @@ export default {
   li: {
     listStyle: 'none',
   },
-  input: {
+  'input, select': {
     border: `1px solid ${color(colors.font).alpha(0.1).rgbaString()}`,
     borderRadius: sizes.radius,
     outline: 'none',

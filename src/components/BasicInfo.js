@@ -7,20 +7,29 @@ import Radium from 'radium';
 import sharedStyle from '../styles/shared/base';
 import basicInfoStyle from '../styles/components/basicInfo';
 
-const BasicInfo = ({ edit, onCover, onProfile, user, webId }) =>
+const BasicInfo = ({ edit, onDelete, onImage, user, webId }) =>
   <article
     style={[sharedStyle.card, basicInfoStyle.basicInfo, user.bcgImg.value &&
       { backgroundImage: `url(${user.bcgImg.value})` }]}
   >
     {edit &&
       <form style={basicInfoStyle.coverForm}>
-        <label style={basicInfoStyle.coverBtn} key="0">
+        {!!user.bcgImg.value &&
+          <label
+            style={basicInfoStyle.trashCoverBtn}
+            onClick={(e) => onDelete(e, user.bcgImg, 'bcgImg')}
+            key="0"
+          >
+            <i className="fa fa-trash"></i>
+          </label>
+        }
+        <label style={basicInfoStyle.coverBtn} key="1">
           Change Cover
           <input
             style={basicInfoStyle.file}
             type="file"
             accept="image/*"
-            onChange={onCover}
+            onChange={(e) => onImage(e, user.bcgImg, 'bcgImg')}
           />
         </label>
       </form>
@@ -29,16 +38,25 @@ const BasicInfo = ({ edit, onCover, onProfile, user, webId }) =>
       <figure style={basicInfoStyle.figure}>
         {edit &&
           <form style={basicInfoStyle.profileForm}>
-            <label style={basicInfoStyle.profileBtn} key="1">
+            <label style={basicInfoStyle.profileBtn} key="2">
               <i style={basicInfoStyle.cameraIcon} className="fa fa-camera" />
               Change Profile
               <input
                 style={basicInfoStyle.file}
                 type="file"
                 accept="image/*"
-                onChange={onProfile}
+                onChange={(e) => onImage(e, user.profileImg, 'profileImg')}
               />
             </label>
+            {!!user.profileImg.value &&
+              <label
+                style={basicInfoStyle.trashProfileBtn}
+                onClick={(e) => onDelete(e, user.profileImg, 'profileImg')}
+                key="3"
+              >
+                <i className="fa fa-trash"></i>
+              </label>
+            }
           </form>
         }
         <img
@@ -60,8 +78,8 @@ const BasicInfo = ({ edit, onCover, onProfile, user, webId }) =>
 
 BasicInfo.propTypes = {
   edit: PropTypes.bool,
-  onCover: PropTypes.func,
-  onProfile: PropTypes.func,
+  onDelete: PropTypes.func,
+  onImage: PropTypes.func,
   user: PropTypes.object.isRequired,
   webId: PropTypes.string.isRequired,
 };

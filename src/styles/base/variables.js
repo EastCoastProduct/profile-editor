@@ -26,6 +26,7 @@ export default {
       return `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
     },
     opacity: 0.8,
+    opacityLow: 0.6,
     radius: 3,
   },
   transition: {
