@@ -5,7 +5,7 @@
 Pull repo, then run in terminal in project directory:
 
     npm install
-    npm run
+    npm start
 
 And open http://localhost:3000/
 

@@ -2,20 +2,25 @@
 
 import Actions from '../constants/actions';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED } = Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED } = Actions;
 
 const initialState = {
   user: {
     bcgImg: {},
+    blogs: [],
+    emails: [],
     empty: true,
     firstName: {},
     fullName: {},
     gender: {},
+    homepages: [],
     keystore: {},
     lastName: {},
     nickName: {},
+    phones: [],
     profileImg: {},
     source: {},
+    workpages: [],
   },
   error: null,
 };
@@ -30,6 +35,7 @@ export default (state = initialState, action) => {
       });
     case PROFILE_GET_FAILED:
     case PROFILE_UPDATE_FAILED:
+    case PROFILE_IMAGE_UPLOAD_FAILED:
       return Object.assign({}, state, {
         error: action.error,
       });

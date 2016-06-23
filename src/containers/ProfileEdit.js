@@ -4,9 +4,15 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { profileFetch, profileUpdate, profileImageUpload, profileImageDelete }
   from '../actions/profile';
+import AppConstants from '../constants/application';
+import Namespaces from '../constants/namespaces';
 import Radium from 'radium';
 import BasicInfo from '../components/BasicInfo';
-import Button from '../components/Button';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import AddInfo from '../components/AddInfo';
+const { FOAF } = Namespaces;
+const { GENDER_OPTIONS } = AppConstants;
 
 // Style
 import sharedStyle from '../styles/shared/base';
@@ -28,6 +34,7 @@ export default class ProfileEdit extends Component {
     this.uploadImage = this.uploadImage.bind(this);
     this.deleteImage = this.deleteImage.bind(this);
     this.updateData = this.updateData.bind(this);
+    this.addDeleteItem = this.addDeleteItem.bind(this);
   }
 
   componentDidMount() {
@@ -67,6 +74,12 @@ export default class ProfileEdit extends Component {
     dispatch(profileUpdate(newValue, item, prop, profile.user.source));
   }
 
+  addDeleteItem(newValue, item, prop, source, array) {
+    const { dispatch } = this.props;
+
+    dispatch(profileUpdate(newValue, item, prop, source, array));
+  }
+
   render() {
     const { location, profile } = this.props;
     const { user } = profile;
@@ -81,88 +94,106 @@ export default class ProfileEdit extends Component {
             onImage={this.uploadImage}
             edit
           />
-          <article style={[sharedStyle.card, profileEditStyle.leftCard]}>
+          <article style={sharedStyle.leftCard}>
             <h3 style={sharedStyle.heading}>
-              <i style={sharedStyle.icon} className="fa fa-user"></i>
+              <i style={sharedStyle.icon} className="fa fa-user" />
               Basic Information
             </h3>
             <form>
-              <label style={profileEditStyle.firstName}>
-                <b style={profileEditStyle.labelText}>First Name</b>
-                <input
-                  style={profileEditStyle.input}
-                  type="text"
-                  placeholder="First Name"
-                  defaultValue={user.firstName.value}
-                  onBlur={(e) => this.updateData(e, user.firstName,
+              <Input
+                style={profileEditStyle.firstName}
+                label="First Name"
+                type="text"
+                placeholder="First Name"
+                defaultValue={user.firstName.value}
+                onBlur={(e) => this.updateData(e, user.firstName,
                     'firstName')}
-                />
-              </label>
-              <label style={profileEditStyle.lastName}>
-                <b style={profileEditStyle.labelText}>Last Name</b>
-                <input
-                  style={profileEditStyle.input}
-                  type="text"
-                  placeholder="Last Name"
-                  defaultValue={user.lastName.value}
-                  onBlur={(e) => this.updateData(e, user.lastName, 'lastName')}
-                />
-              </label>
-              <label style={profileEditStyle.nickName}>
-                <b style={profileEditStyle.labelText}>Nickname</b>
-                <input
-                  style={profileEditStyle.input}
-                  type="text"
-                  placeholder="Nickname"
-                  defaultValue={user.nickName.value}
-                  onBlur={(e) => this.updateData(e, user.nickName, 'nickName')}
-                />
-              </label>
-              <label style={profileEditStyle.fullName}>
-                <b style={profileEditStyle.labelText}>Full Name</b>
-                <input
-                  style={profileEditStyle.input}
-                  type="text"
-                  placeholder="Full Name"
-                  defaultValue={user.fullName.value}
-                  onBlur={(e) => this.updateData(e, user.fullName, 'fullName')}
-                />
-              </label>
-              <label style={profileEditStyle.gender}>
-                <b style={profileEditStyle.labelText}>Gender</b>
-                <select
-                  style={profileEditStyle.select}
-                  defaultValue={user.gender.value}
-                  onChange={(e) => this.updateData(e, user.gender, 'gender')}
-                >
-                  <option>Select gender...</option>
-                  <option value="Female">Female</option>
-                  <option value="Male">Male</option>
-                  <option value="Other">Other</option>
-                </select>
-              </label>
+              />
+              <Input
+                style={profileEditStyle.lastName}
+                label="Last Name"
+                type="text"
+                placeholder="Last Name"
+                defaultValue={user.lastName.value}
+                onBlur={(e) => this.updateData(e, user.lastName, 'lastName')}
+              />
+              <Input
+                style={profileEditStyle.nickName}
+                label="Nickname"
+                type="text"
+                placeholder="Nickname"
+                defaultValue={user.nickName.value}
+                onBlur={(e) => this.updateData(e, user.nickName, 'nickName')}
+              />
+              <Input
+                style={profileEditStyle.fullName}
+                label="Full Name"
+                type="text"
+                placeholder="Full Name"
+                defaultValue={user.fullName.value}
+                onBlur={(e) => this.updateData(e, user.fullName, 'fullName')}
+              />
+              <Select
+                style={profileEditStyle.gender}
+                label="Gender"
+                options={GENDER_OPTIONS}
+                defaultValue={user.gender.value}
+                onChange={(e) => this.updateData(e, user.gender, 'gender')}
+              />
             </form>
           </article>
-          <article style={[sharedStyle.card, profileEditStyle.leftCard]}>
-            <h3 style={sharedStyle.heading}>
-              <i style={sharedStyle.icon} className="fa fa-phone"></i>
-              Phone Numbers
-            </h3>
-            <form>
-              <label>
-                <b style={profileEditStyle.labelText}>New Phone</b>
-                <input
-                  style={profileEditStyle.newInput}
-                  type="tel"
-                  placeholder="Phone"
-                />
-                <Button type="submit" style={profileEditStyle.newButton}>
-                  <i style={sharedStyle.icon} className="fa fa-plus"></i>
-                  Add Phone
-                </Button>
-              </label>
-            </form>
-          </article>
+          <AddInfo
+            icon="phone"
+            name="Phone"
+            onAddDeleteItem={this.addDeleteItem}
+            predicate={new FOAF('phone')}
+            prefix="tel:"
+            prop="phones"
+            type="tel"
+            user={user}
+            webId={location.query.webId}
+          />
+          <AddInfo
+            icon="envelope"
+            name="Email"
+            onAddDeleteItem={this.addDeleteItem}
+            predicate={new FOAF('mbox')}
+            prefix="mailto:"
+            prop="emails"
+            type="email"
+            user={user}
+            webId={location.query.webId}
+          />
+          <AddInfo
+            icon="rss"
+            name="Blog"
+            onAddDeleteItem={this.addDeleteItem}
+            predicate={new FOAF('weblog')}
+            prop="blogs"
+            type="url"
+            user={user}
+            webId={location.query.webId}
+          />
+          <AddInfo
+            icon="globe"
+            name="Homepage"
+            onAddDeleteItem={this.addDeleteItem}
+            predicate={new FOAF('homepage')}
+            prop="homepages"
+            type="url"
+            user={user}
+            webId={location.query.webId}
+          />
+          <AddInfo
+            icon="globe"
+            name="Workpage"
+            onAddDeleteItem={this.addDeleteItem}
+            predicate={new FOAF('workplaceHomepage')}
+            prop="workpages"
+            type="url"
+            user={user}
+            webId={location.query.webId}
+          />
         </section>
     );
   }

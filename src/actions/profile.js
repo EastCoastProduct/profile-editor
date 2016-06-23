@@ -59,6 +59,12 @@ function setDataValues(data) {
   Object.keys(valData).forEach((key) => {
     if (valData[key].constructor.name === 'Statement') {
       valData[key].value = valData[key].object.value || valData[key].object.uri;
+    } else if (Array.isArray(valData[key])) {
+      valData[key].forEach((item, arrKey) => {
+        if (item.constructor.name !== 'Statement') return false;
+        valData[key][arrKey].value = item.object.value || item.object.uri;
+        return true;
+      });
     }
   });
   return valData;
@@ -107,12 +113,20 @@ export function profileFetch(webId) {
       data.bcgImg = getStatement(g, webSym, new UI('backgroundImage'));
       data.empty = false;
 
+      // array collections
+      data.phones = g.statementsMatching(webSym, new FOAF('phone'));
+      data.emails = g.statementsMatching(webSym, new FOAF('mbox'));
+      data.blogs = g.statementsMatching(webSym, new FOAF('weblog'));
+      data.homepages = g.statementsMatching(webSym, new FOAF('homepage'));
+      data.workpages =
+        g.statementsMatching(webSym, new FOAF('workplaceHomepage'));
+
       dispatch(profileFetchSuccess(setDataValues(data)));
     });
   };
 }
 
-export function profileUpdate(value, item, prop, source) {
+export function profileUpdate(value, item, prop, source, array) {
   return dispatch => {
     let query = '';
     let graphUri = '';
@@ -143,7 +157,12 @@ export function profileUpdate(value, item, prop, source) {
       },
       body: query,
     }).then(() => {
-      dispatch(profileUpdateSuccess(newS, prop));
+      if (array) {
+        let newArray;
+        if (!!value) newArray = array.concat(newS);
+        return dispatch(profileUpdateSuccess(newArray || array, prop));
+      }
+      return dispatch(profileUpdateSuccess(newS, prop));
     }).catch((err) => {
       dispatch(profileUpdateFailed(err));
     });

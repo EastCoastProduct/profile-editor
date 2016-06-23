@@ -1,15 +1,14 @@
 'use strict';
 
 export default {
-  halfCardLeft: {
+  halfLeft: {
     float: 'left',
-    marginRight: '2%',
-    textAlign: 'left',
-    width: '48%',
+    marginRight: '1%',
+    width: '49%',
   },
-  term: {
-    display: 'inline-block',
-    minWidth: '35%',
-    verticalAlign: 'middle',
+  halfRight: {
+    float: 'right',
+    marginLeft: '1%',
+    width: '49%',
   },
 };

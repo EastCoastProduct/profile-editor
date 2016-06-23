@@ -3,6 +3,15 @@
 import variables from '../base/variables';
 const { colors, sizes } = variables;
 
+const mixin = {
+  card: {
+    backgroundColor: colors.card,
+    borderRadius: sizes.radius,
+    boxShadow: `0 2px 10px ${colors.shadow}`,
+    padding: 30,
+  },
+};
+
 export default {
   content: {
     margin: '0 auto',
@@ -11,11 +20,13 @@ export default {
     width: sizes.container,
   },
   card: {
-    backgroundColor: colors.card,
-    borderRadius: sizes.radius,
-    boxShadow: `0 2px 10px ${colors.shadow}`,
-    padding: 30,
+    ...mixin.card,
     textAlign: 'center',
+  },
+  leftCard: {
+    ...mixin.card,
+    marginBottom: 20,
+    textAlign: 'left',
   },
   errMsg: {
     color: colors.error,
@@ -29,5 +40,10 @@ export default {
   },
   icon: {
     marginRight: 10,
+  },
+  labelText: {
+    display: 'block',
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 };

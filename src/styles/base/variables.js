@@ -12,6 +12,7 @@ export default {
     card: '#fff',
     error: '#f00',
     font: '#262626',
+    link: '#FE8069',
     mainBtn: '#FF5F6D',
     navigation: '#333',
     get shadow() {
