@@ -33,6 +33,9 @@ export default {
   h3: {
     fontSize: '1.5em',
   },
+  h4: {
+    fontSize: '1.2em',
+  },
   a: {
     color: 'inherit',
     textDecoration: 'none',

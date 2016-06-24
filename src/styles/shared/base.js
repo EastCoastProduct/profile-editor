@@ -1,6 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
+import color from 'color';
 const { colors, sizes } = variables;
 
 const mixin = {
@@ -16,7 +17,7 @@ export default {
   content: {
     margin: '0 auto',
     minHeight: sizes.mainHeight,
-    padding: '50px 0',
+    padding: `${sizes.headerHeight + 50}px 0`,
     width: sizes.container,
   },
   card: {
@@ -45,5 +46,9 @@ export default {
     display: 'block',
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  infoMsg: {
+    color: color(colors.font).lighten(3).rgbString(),
+    fontStyle: 'italic',
   },
 };

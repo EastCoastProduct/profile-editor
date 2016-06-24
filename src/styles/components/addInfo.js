@@ -5,9 +5,6 @@ import color from 'color';
 const { colors, transition } = variables;
 
 export default {
-  list: {
-    marginBottom: 20,
-  },
   listItem: {
     marginBottom: 5,
   },
@@ -20,9 +17,7 @@ export default {
       color: color(colors.mainBtn).lighten(0.2).rgbString(),
     },
   },
-  infoMsg: {
-    color: color(colors.font).lighten(3).rgbString(),
-    fontStyle: 'italic',
-    marginBottom: 20,
+  form: {
+    marginTop: 20,
   },
 };

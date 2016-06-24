@@ -24,7 +24,7 @@ export default {
     footerHeight: 45,
     headerHeight: 70,
     get mainHeight() {
-      return `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
+      return `calc(100vh - ${this.footerHeight}px)`;
     },
     opacity: 0.8,
     opacityLow: 0.6,

@@ -24,10 +24,15 @@ const Navigation = ({ edit, onClick }) =>
           </Link>
         </li>
         <li>
-          <a style={navStyle.navItem} href="#" key="1">
+          <Link
+            style={navStyle.navItem}
+            to="/friends"
+            key="1"
+            activeStyle={navStyle.navActive}
+          >
             <i style={navStyle.navIcon} className="fa fa-users"></i>
             People you know
-          </a>
+          </Link>
         </li>
         <li>
           <Link

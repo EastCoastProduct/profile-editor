@@ -9,6 +9,9 @@ export default {
     color: colors.card,
     height: sizes.headerHeight,
     padding: '0 20px',
+    position: 'fixed',
+    width: '100%',
+    zIndex: 3,
   },
   menuText: {
     cursor: 'pointer',
