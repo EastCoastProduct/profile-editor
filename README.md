@@ -15,4 +15,18 @@ And open http://localhost:3000/
 
 /login - Authentication (not working)
 
-/edit?webId - Profile Edit (in process of development, basic profile update and image delete/upload works)
+/edit?webId - Profile Edit
+
+/friends?webId - View / Add / Delete Friends
+
+TODO:
+
+- Deploy (to heroku)
+
+- Validation (using redux-forms)
+
+- Fix ongoing bugs (Auth, routing, etc.) and enable manual adding of webId instead of directly in URL (close to finish, unresolved issue is breaking it at the moment)
+
+- use solid.js
+
+- tests
