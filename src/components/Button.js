@@ -6,11 +6,14 @@ import Radium from 'radium';
 // Style
 import buttonStyle from '../styles/components/button';
 
-const Button = ({ style, ...props }) =>
-  <button style={[buttonStyle.mainBtn, style]} {...props} />;
+const Button = ({ empty, style, ...props }) =>
+  <button
+    style={[empty ? buttonStyle.emptyBtn : buttonStyle.mainBtn, style]}
+    {...props}
+  />;
 
 Button.propTypes = {
-  onClick: PropTypes.func,
+  empty: PropTypes.bool,
   style: PropTypes.object,
 };
 

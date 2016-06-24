@@ -2,7 +2,8 @@
 
 import Actions from '../constants/actions';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED } = Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS } =
+  Actions;
 
 const initialState = {
   user: {
@@ -11,6 +12,7 @@ const initialState = {
     emails: [],
     empty: true,
     firstName: {},
+    friends: [],
     fullName: {},
     gender: {},
     homepages: [],
@@ -25,6 +27,12 @@ const initialState = {
   error: null,
 };
 
+function assignNewArrayItem(friends, action) {
+  const newArray = friends;
+  newArray[action.key].data = action.friend;
+  return newArray;
+}
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case PROFILE_GET_SUCCESS:
@@ -32,6 +40,12 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, action.user),
         error: null,
+      });
+    case FRIEND_GET_SUCCESS:
+      return Object.assign({}, state, {
+        user: Object.assign({}, state.user, {
+          friends: assignNewArrayItem(state.user.friends, action),
+        }),
       });
     case PROFILE_GET_FAILED:
     case PROFILE_UPDATE_FAILED:

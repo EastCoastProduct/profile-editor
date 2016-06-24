@@ -8,7 +8,8 @@ import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import Namespaces from '../constants/namespaces';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED } = Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS } =
+  Actions;
 const { ACL, DCT, FOAF, UI } = Namespaces;
 
 function profileFetchSuccess(user) {
@@ -48,6 +49,14 @@ function profileImageUploadFailed(error) {
   };
 }
 
+function friendFetchSuccess(friend, key) {
+  return {
+    type: FRIEND_GET_SUCCESS,
+    friend,
+    key,
+  };
+}
+
 function getStatement(g, subject, predicate, dontCreateStatement) {
   const statement = g.statementsMatching(subject, predicate)[0];
   if (dontCreateStatement) return statement;
@@ -70,7 +79,7 @@ function setDataValues(data) {
   return valData;
 }
 
-export function profileFetch(webId) {
+export function profileFetch(webId, key = undefined, callback) {
   return dispatch => {
     const g = $rdf.graph();
     const f = $rdf.fetcher(g);
@@ -121,12 +130,20 @@ export function profileFetch(webId) {
       data.workpages =
         g.statementsMatching(webSym, new FOAF('workplaceHomepage'));
 
-      dispatch(profileFetchSuccess(setDataValues(data)));
+      // Friends
+      data.friends = g.statementsMatching(webSym, new FOAF('knows'));
+
+      if (key !== undefined) {
+        dispatch(friendFetchSuccess(setDataValues(data), key));
+      } else {
+        dispatch(profileFetchSuccess(setDataValues(data)));
+      }
+      if (callback && typeof callback === 'function') callback();
     });
   };
 }
 
-export function profileUpdate(value, item, prop, source, array) {
+export function profileUpdate(value, item, prop, source, array, callback) {
   return dispatch => {
     let query = '';
     let graphUri = '';
@@ -160,9 +177,11 @@ export function profileUpdate(value, item, prop, source, array) {
       if (array) {
         let newArray;
         if (!!value) newArray = array.concat(newS);
-        return dispatch(profileUpdateSuccess(newArray || array, prop));
+        dispatch(profileUpdateSuccess(newArray || array, prop));
+        if (callback && typeof callback === 'function') callback();
+      } else {
+        dispatch(profileUpdateSuccess(newS, prop));
       }
-      return dispatch(profileUpdateSuccess(newS, prop));
     }).catch((err) => {
       dispatch(profileUpdateFailed(err));
     });

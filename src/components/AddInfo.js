@@ -82,14 +82,15 @@ export default class AddInfo extends Component {
           {`${name}s`}
         </h3>
         {user[prop].length > 0 ?
-          <ul style={addInfoStyle.list}>
+          <ul>
             {this.renderList(user[prop], prop, prefix)}
           </ul> :
-          <p style={addInfoStyle.infoMsg}>
+          <p style={sharedStyle.infoMsg}>
             No items at the moment
           </p>
         }
         <form
+          style={addInfoStyle.form}
           onSubmit={(e) => this.addItem(e, prop, predicate, prefix)}
         >
           <Input

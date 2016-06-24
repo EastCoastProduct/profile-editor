@@ -7,6 +7,7 @@ import App from '../containers/App';
 import Login from '../containers/Login';
 import Profile from '../containers/Profile';
 import ProfileEdit from '../containers/ProfileEdit';
+import Friends from '../containers/Friends';
 
 const Routes = ({ store, history }) =>
   <Provider store={store}>
@@ -15,6 +16,7 @@ const Routes = ({ store, history }) =>
         <IndexRoute component={Profile} title="View Profile" />
         <Route path="edit" component={ProfileEdit} title="Edit Profile" edit />
         <Route path="login" component={Login} title="Login" />
+        <Route path="friends" component={Friends} title="Friends" />
       </Route>
     </Router>
   </Provider>;

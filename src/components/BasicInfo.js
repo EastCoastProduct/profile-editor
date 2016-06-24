@@ -62,8 +62,8 @@ const BasicInfo = ({ edit, onDelete, onImage, user, webId }) =>
         <img
           style={basicInfoStyle.image}
           src={user.profileImg.value ? user.profileImg.value :
-            'http://www.adtechnology.co.uk/images/UGM-default-user.png'}
-          alt="Placeholder"
+            'http://igi.icmconsulting.com/static/events/img/blank-user.jpg'}
+          alt={`${user.fullName.value}'s Profile`}
         />
       </figure>
       {user.fullName &&
