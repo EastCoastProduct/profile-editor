@@ -13,8 +13,8 @@ const Routes = ({ store, history }) =>
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={App}>
-        <IndexRoute component={Profile} title="View Profile" />
-        <Route path="edit" component={ProfileEdit} title="Edit Profile" edit />
+        <IndexRoute component={Profile} title="View Profile" view />
+        <Route path="edit" component={ProfileEdit} title="Edit Profile" />
         <Route path="login" component={Login} title="Login" />
         <Route path="friends" component={Friends} title="Friends" />
       </Route>

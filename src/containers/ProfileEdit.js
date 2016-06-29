@@ -4,19 +4,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { profileFetch, profileUpdate, profileImageUpload, profileImageDelete }
   from '../actions/profile';
-import AppConstants from '../constants/application';
-import Namespaces from '../constants/namespaces';
 import Radium from 'radium';
+import Namespaces from '../constants/namespaces';
+import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
-import Input from '../components/Input';
-import Select from '../components/Select';
 import AddInfo from '../components/AddInfo';
+import WebId from '../components/WebId';
 const { FOAF } = Namespaces;
-const { GENDER_OPTIONS } = AppConstants;
-
-// Style
-import sharedStyle from '../styles/shared/base';
-import profileEditStyle from '../styles/containers/profileEdit';
 
 @connect(state => ({
   profile: state.profile,
@@ -38,15 +32,19 @@ export default class ProfileEdit extends Component {
   }
 
   componentDidMount() {
-    const { profile } = this.props;
-
-    if (profile.user.empty) this.getProfile();
+    this.getProfile();
   }
 
-  getProfile() {
-    const { dispatch, location } = this.props;
+  componentWillUpdate(nextProps) {
+    this.getProfile(nextProps);
+  }
 
-    dispatch(profileFetch(location.query.webId));
+  getProfile(nextProps) {
+    const { dispatch, location, profile } = nextProps || this.props;
+
+    if (location.query.webId && profile.user.webId !== location.query.webId) {
+      dispatch(profileFetch(location.query.webId));
+    }
   }
 
   uploadImage(e, item, prop) {
@@ -85,116 +83,71 @@ export default class ProfileEdit extends Component {
     const { user } = profile;
 
     return (
-      !user.empty &&
-        <section>
-          <BasicInfo
-            webId={location.query.webId}
-            user={profile.user}
-            onDelete={this.deleteImage}
-            onImage={this.uploadImage}
-            edit
-          />
-          <article style={sharedStyle.leftCard}>
-            <h3 style={sharedStyle.heading}>
-              <i style={sharedStyle.icon} className="fa fa-user" />
-              Basic Information
-            </h3>
-            <form>
-              <Input
-                style={profileEditStyle.firstName}
-                label="First Name"
-                type="text"
-                placeholder="First Name"
-                defaultValue={user.firstName.value}
-                onBlur={(e) => this.updateData(e, user.firstName,
-                    'firstName')}
-              />
-              <Input
-                style={profileEditStyle.lastName}
-                label="Last Name"
-                type="text"
-                placeholder="Last Name"
-                defaultValue={user.lastName.value}
-                onBlur={(e) => this.updateData(e, user.lastName, 'lastName')}
-              />
-              <Input
-                style={profileEditStyle.nickName}
-                label="Nickname"
-                type="text"
-                placeholder="Nickname"
-                defaultValue={user.nickName.value}
-                onBlur={(e) => this.updateData(e, user.nickName, 'nickName')}
-              />
-              <Input
-                style={profileEditStyle.fullName}
-                label="Full Name"
-                type="text"
-                placeholder="Full Name"
-                defaultValue={user.fullName.value}
-                onBlur={(e) => this.updateData(e, user.fullName, 'fullName')}
-              />
-              <Select
-                style={profileEditStyle.gender}
-                label="Gender"
-                options={GENDER_OPTIONS}
-                defaultValue={user.gender.value}
-                onChange={(e) => this.updateData(e, user.gender, 'gender')}
-              />
-            </form>
-          </article>
-          <AddInfo
-            icon="phone"
-            name="Phone"
-            onAddDeleteItem={this.addDeleteItem}
-            predicate={new FOAF('phone')}
-            prefix="tel:"
-            prop="phones"
-            type="tel"
-            user={user}
-            webId={location.query.webId}
-          />
-          <AddInfo
-            icon="envelope"
-            name="Email"
-            onAddDeleteItem={this.addDeleteItem}
-            predicate={new FOAF('mbox')}
-            prefix="mailto:"
-            prop="emails"
-            type="email"
-            user={user}
-            webId={location.query.webId}
-          />
-          <AddInfo
-            icon="rss"
-            name="Blog"
-            onAddDeleteItem={this.addDeleteItem}
-            predicate={new FOAF('weblog')}
-            prop="blogs"
-            type="url"
-            user={user}
-            webId={location.query.webId}
-          />
-          <AddInfo
-            icon="globe"
-            name="Homepage"
-            onAddDeleteItem={this.addDeleteItem}
-            predicate={new FOAF('homepage')}
-            prop="homepages"
-            type="url"
-            user={user}
-            webId={location.query.webId}
-          />
-          <AddInfo
-            icon="globe"
-            name="Workpage"
-            onAddDeleteItem={this.addDeleteItem}
-            predicate={new FOAF('workplaceHomepage')}
-            prop="workpages"
-            type="url"
-            user={user}
-            webId={location.query.webId}
-          />
-        </section>
+      location.query.webId ?
+        user.webId === location.query.webId &&
+          <section>
+            <ProfileCover
+              webId={location.query.webId}
+              user={profile.user}
+              onDelete={this.deleteImage}
+              onImage={this.uploadImage}
+              edit
+            />
+            <BasicInfo user={user} onUpdate={this.updateData} edit />
+            <AddInfo
+              icon="phone"
+              name="Phone"
+              onAddDeleteItem={this.addDeleteItem}
+              predicate={new FOAF('phone')}
+              prefix="tel:"
+              prop="phones"
+              type="tel"
+              user={user}
+              webId={location.query.webId}
+            />
+            <AddInfo
+              icon="envelope"
+              name="Email"
+              onAddDeleteItem={this.addDeleteItem}
+              predicate={new FOAF('mbox')}
+              prefix="mailto:"
+              prop="emails"
+              type="email"
+              user={user}
+              webId={location.query.webId}
+            />
+            <AddInfo
+              icon="rss"
+              name="Blog"
+              onAddDeleteItem={this.addDeleteItem}
+              predicate={new FOAF('weblog')}
+              prop="blogs"
+              type="url"
+              user={user}
+              webId={location.query.webId}
+            />
+            <AddInfo
+              icon="globe"
+              name="Homepage"
+              onAddDeleteItem={this.addDeleteItem}
+              predicate={new FOAF('homepage')}
+              prop="homepages"
+              type="url"
+              user={user}
+              webId={location.query.webId}
+            />
+            <AddInfo
+              icon="globe"
+              name="Workpage"
+              onAddDeleteItem={this.addDeleteItem}
+              predicate={new FOAF('workplaceHomepage')}
+              prop="workpages"
+              type="url"
+              user={user}
+              webId={location.query.webId}
+            />
+          </section> :
+        <WebId goTo="/edit" />
     );
   }
 }

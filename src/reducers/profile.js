@@ -10,7 +10,6 @@ const initialState = {
     bcgImg: {},
     blogs: [],
     emails: [],
-    empty: true,
     firstName: {},
     friends: [],
     fullName: {},
@@ -22,16 +21,11 @@ const initialState = {
     phones: [],
     profileImg: {},
     source: {},
+    webId: null,
     workpages: [],
   },
   error: null,
 };
-
-function assignNewArrayItem(friends, action) {
-  const newArray = friends;
-  newArray[action.key].data = action.friend;
-  return newArray;
-}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -44,7 +38,7 @@ export default (state = initialState, action) => {
     case FRIEND_GET_SUCCESS:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, {
-          friends: assignNewArrayItem(state.user.friends, action),
+          friends: action.friends,
         }),
       });
     case PROFILE_GET_FAILED:

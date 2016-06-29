@@ -12,19 +12,21 @@ import defaults from '../styles/base/defaults';
 import sharedStyle from '../styles/shared/base';
 const globalStyles = _.merge(normalize, defaults);
 
-const App = ({ children }) =>
+const App = (props) =>
   <div>
     <Style rules={globalStyles} />
     <Header
-      title={children.props.route.title}
-      edit={children.props.route.edit}
+      title={props.children.props.route.title}
+      view={props.children.props.route.view}
+      webId={props.location.query.webId}
     />
-    <main style={sharedStyle.content}>{children}</main>
+    <main style={sharedStyle.content}>{props.children}</main>
     <Footer />
   </div>;
 
 App.propTypes = {
   children: PropTypes.element.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
 export default new Radium(App);
