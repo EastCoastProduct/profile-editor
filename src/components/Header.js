@@ -10,8 +10,9 @@ import headerStyle from '../styles/components/header';
 @Radium
 export default class Header extends Component {
   static propTypes = {
-    edit: PropTypes.bool,
     title: PropTypes.string.isRequired,
+    view: PropTypes.bool,
+    webId: PropTypes.string,
   };
 
   constructor() {
@@ -29,7 +30,7 @@ export default class Header extends Component {
 
   render() {
     const { menuShow } = this.state;
-    const { edit, title } = this.props;
+    const { title, view, webId } = this.props;
 
     return (
       <header style={headerStyle.base}>
@@ -38,7 +39,11 @@ export default class Header extends Component {
           {title}
         </h1>
         {menuShow &&
-          <Navigation onClick={() => this.showMenu(false)} edit={edit} />
+          <Navigation
+            onClick={() => this.showMenu(false)}
+            view={view}
+            webId={webId}
+          />
         }
       </header>
     );

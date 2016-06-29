@@ -49,11 +49,10 @@ function profileImageUploadFailed(error) {
   };
 }
 
-function friendFetchSuccess(friend, key) {
+function friendFetchSuccess(friends) {
   return {
     type: FRIEND_GET_SUCCESS,
-    friend,
-    key,
+    friends,
   };
 }
 
@@ -79,19 +78,23 @@ function setDataValues(data) {
   return valData;
 }
 
-export function profileFetch(webId, key = undefined, callback) {
-  return dispatch => {
-    const g = $rdf.graph();
-    const f = $rdf.fetcher(g);
-    const docUri = webId.indexOf('#') >= 0 ? webId.slice(0, webId.indexOf('#'))
-      : webId;
-    const webSym = $rdf.sym(webId);
+function fetchUser(webId, isFriend = false) {
+  const g = $rdf.graph();
+  const f = $rdf.fetcher(g);
+  const docUri = webId.indexOf('#') >= 0 ? webId.slice(0, webId.indexOf('#'))
+    : webId;
+  const webSym = $rdf.sym(webId);
 
+  return new Promise((resolve, reject) => {
     f.nowOrWhenFetched(docUri, (ok, body, xhr) => {
       if (!ok) {
-        dispatch(profileFetchFailed('Profile not found'));
+        if (isFriend) resolve('Profile not found');
+        reject('Profile not found');
       }
       const data = {};
+
+      // add webID
+      data.webId = webId;
 
       // add source
       let docName = g.statementsMatching($rdf.sym(docUri), new DCT('title'))[0];
@@ -120,7 +123,6 @@ export function profileFetch(webId, key = undefined, callback) {
         getStatement(g, webSym, new FOAF('depiction'), true) ||
         getStatement(g, webSym, new FOAF('img'));
       data.bcgImg = getStatement(g, webSym, new UI('backgroundImage'));
-      data.empty = false;
 
       // array collections
       data.phones = g.statementsMatching(webSym, new FOAF('phone'));
@@ -133,12 +135,17 @@ export function profileFetch(webId, key = undefined, callback) {
       // Friends
       data.friends = g.statementsMatching(webSym, new FOAF('knows'));
 
-      if (key !== undefined) {
-        dispatch(friendFetchSuccess(setDataValues(data), key));
-      } else {
-        dispatch(profileFetchSuccess(setDataValues(data)));
-      }
-      if (callback && typeof callback === 'function') callback();
+      resolve(setDataValues(data));
+    });
+  });
+}
+
+export function profileFetch(webId) {
+  return dispatch => {
+    fetchUser(webId).then((resp) => {
+      dispatch(profileFetchSuccess(resp));
+    }).catch((err) => {
+      dispatch(profileFetchFailed(err));
     });
   };
 }
@@ -231,6 +238,25 @@ export function profileImageDelete(item, prop, source) {
       dispatch(profileUpdate(undefined, item, prop, source));
     }).catch((err) => {
       dispatch(profileImageUploadFailed(err));
+    });
+  };
+}
+
+export function getFriends(friends) {
+  return dispatch => {
+    const fetches = friends.map((item) => {
+      if (!item.data) return fetchUser(item.object.uri, true);
+      return false;
+    }).filter((item) => item);
+
+    Promise.all(fetches).then((resp) => {
+      const newFriends = friends.map((item, index) => {
+        if (!item.data) return { ...item, data: resp[index] };
+        return item;
+      });
+      dispatch(friendFetchSuccess(newFriends));
+    }).catch((err) => {
+      dispatch(profileFetchFailed(err));
     });
   };
 }

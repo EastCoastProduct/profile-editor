@@ -15,8 +15,16 @@ const Footer = () =>
   <footer style={footerStyle.base}>
     <p style={footerStyle.text}>
       <small style={footerStyle.copyright}>&copy;</small>{getYear()}
-      <a style={footerStyle.tracker} href="#">Issue Tracker</a>
-      <a style={footerStyle.github} href="#">GitHub</a>
+      <a
+        style={footerStyle.tracker}
+        target="_blank"
+        href="https://github.com/EastCoastProduct/profile-editor"
+      >Issue Tracker</a>
+      <a
+        style={footerStyle.github}
+        target="_blank"
+        href="https://github.com/EastCoastProduct/profile-editor/issues"
+      >GitHub</a>
     </p>
   </footer>;
 

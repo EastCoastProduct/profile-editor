@@ -8,25 +8,34 @@ const Link = new Radium(RRLink);
 // Style
 import navStyle from '../styles/components/navigation';
 
-const Navigation = ({ edit, onClick }) =>
+function viewOrEditUrl(view, webId) {
+  if (webId) {
+    return view ? `/edit?webId=${encodeURIComponent(webId)}` :
+      `/?webId=${encodeURIComponent(webId)}`;
+  }
+  return view ? '/edit' : '/';
+}
+
+const Navigation = ({ onClick, view, webId }) =>
   <div style={navStyle.overlay} onClick={onClick}>
     <nav style={navStyle.navigation}>
       <ul>
         <li>
           <Link
             style={navStyle.navItem}
-            to={edit ? '/' : '/edit'}
+            to={viewOrEditUrl(view, webId)}
             key="0"
             activeStyle={navStyle.navActive}
           >
             <i style={navStyle.navIcon} className="fa fa-user"></i>
-            {edit ? 'View Profile' : 'Edit profile'}
+            {view ? 'Edit profile' : 'View Profile'}
           </Link>
         </li>
         <li>
           <Link
             style={navStyle.navItem}
-            to="/friends"
+            to={webId ? `/friends?webId=${encodeURIComponent(webId)}` :
+              '/friends'}
             key="1"
             activeStyle={navStyle.navActive}
           >
@@ -51,8 +60,9 @@ const Navigation = ({ edit, onClick }) =>
   </div>;
 
 Navigation.propTypes = {
-  edit: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  view: PropTypes.bool,
+  webId: PropTypes.string,
 };
 
 export default new Radium(Navigation);
