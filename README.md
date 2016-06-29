@@ -21,11 +21,9 @@ And open http://localhost:3000/
 
 TODO:
 
-- Deploy (to heroku)
+- pagination (half way finished, needed for friends page to fetch less data if user has many friends and organize it with pagination)
 
 - Validation (using redux-forms)
-
-- Fix ongoing bugs (Auth, routing, etc.) and enable manual adding of webId instead of directly in URL (close to finish, unresolved issue is breaking it at the moment)
 
 - use solid.js
 
