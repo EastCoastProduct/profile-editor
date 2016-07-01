@@ -28,7 +28,7 @@ export default class Profile extends Component {
     this.getProfile();
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.getProfile(nextProps);
   }
 

@@ -8,8 +8,8 @@ import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import Namespaces from '../constants/namespaces';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS } =
-  Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS,
+  PAGINATION_CHANGED } = Actions;
 const { ACL, DCT, FOAF, UI } = Namespaces;
 
 function profileFetchSuccess(user) {
@@ -53,6 +53,16 @@ function friendFetchSuccess(friends) {
   return {
     type: FRIEND_GET_SUCCESS,
     friends,
+  };
+}
+
+
+export function pageChanged(page, start, end) {
+  return {
+    type: PAGINATION_CHANGED,
+    page,
+    start,
+    end,
   };
 }
 
@@ -242,19 +252,22 @@ export function profileImageDelete(item, prop, source) {
   };
 }
 
-export function getFriends(friends) {
+export function getFriends(pagFriends, friends, start, itemsPerPage) {
   return dispatch => {
-    const fetches = friends.map((item) => {
+    const fetches = pagFriends.map((item) => {
       if (!item.data) return fetchUser(item.object.uri, true);
-      return false;
-    }).filter((item) => item);
+      return item.data;
+    });
 
     Promise.all(fetches).then((resp) => {
-      const newFriends = friends.map((item, index) => {
-        if (!item.data) return { ...item, data: resp[index] };
+      const newFriends = pagFriends.map((item, index) => {
+        if (!item.data) item.data = resp[index];
         return item;
       });
-      dispatch(friendFetchSuccess(newFriends));
+
+      friends.splice(start, itemsPerPage, ...newFriends);
+
+      dispatch(friendFetchSuccess(friends));
     }).catch((err) => {
       dispatch(profileFetchFailed(err));
     });

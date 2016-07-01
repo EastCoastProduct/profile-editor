@@ -3,13 +3,17 @@
 import $rdf from 'rdflib';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { profileFetch, profileUpdate, getFriends } from '../actions/profile';
+import { profileFetch, profileUpdate, getFriends, pageChanged }
+  from '../actions/profile';
+import appConstants from '../constants/application';
 import Radium from 'radium';
 import Namespaces from '../constants/namespaces';
-import Input from '../components/Input';
 import FriendItem from '../components/FriendItem';
+import Pagination from '../components/Pagination';
+import Input from '../components/Input';
 import WebId from '../components/WebId';
 const { FOAF } = Namespaces;
+const { PAGINATION } = appConstants;
 
 // Style
 import sharedStyle from '../styles/shared/base';
@@ -30,13 +34,14 @@ export default class Friends extends Component {
     super();
     this.addNewFriend = this.addNewFriend.bind(this);
     this.deleteFriend = this.deleteFriend.bind(this);
+    this.pageChanged = this.pageChanged.bind(this);
   }
 
   componentDidMount() {
     this.getProfile();
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.getProfile(nextProps);
   }
 
@@ -46,17 +51,19 @@ export default class Friends extends Component {
     if (location.query.webId && profile.user.webId !== location.query.webId) {
       return dispatch(profileFetch(location.query.webId));
     }
-
-    if (profile.user.friends.filter((item) => !item.data).length > 0) {
-      return this.getFriends(nextProps);
-    }
-    return false;
+    return this.getFriends(nextProps);
   }
 
   getFriends(nextProps) {
     const { dispatch, profile } = nextProps || this.props;
 
-    dispatch(getFriends(profile.user.friends));
+    const start = profile.pagination.start - 1;
+    const end = profile.pagination.end;
+    const pagFriends = profile.user.friends.slice(start, end);
+
+    if (pagFriends.filter(itm => !itm.data).length > 0) {
+      dispatch(getFriends(pagFriends, profile.user.friends, start, PAGINATION));
+    }
   }
 
   addNewFriend(e) {
@@ -84,14 +91,26 @@ export default class Friends extends Component {
       array));
   }
 
-  renderFriends(friends) {
-    return friends.map((friend, index) => {
+  pageChanged(page, start, end) {
+    const { dispatch } = this.props;
+
+    dispatch(pageChanged(page, start, end));
+  }
+
+  renderFriends() {
+    const { profile } = this.props;
+
+    const start = profile.pagination.start - 1;
+    const end = profile.pagination.end;
+    const pagFriends = profile.user.friends.slice(start, end);
+
+    return pagFriends.map((friend, index) => {
       return (
         friend.data &&
           <FriendItem
             data={friend.data}
             key={index}
-            index={index}
+            index={index + (profile.pagination.page - 1) * PAGINATION}
             onDelete={this.deleteFriend}
             url={friend.object.uri}
           />
@@ -101,7 +120,7 @@ export default class Friends extends Component {
 
   render() {
     const { location, profile } = this.props;
-    const { user } = profile;
+    const { pagination, user } = profile;
 
     return (
       location.query.webId ?
@@ -113,11 +132,19 @@ export default class Friends extends Component {
                 Friends of {user.fullName.value}
               </h3>
               {user.friends.length > 0 ?
-                <ul>{this.renderFriends(user.friends)}</ul> :
+                <ul>{this.renderFriends()}</ul> :
                 <p style={sharedStyle.infoMsg}>
                   There are no friends at the moment.
                 </p>
               }
+              <Pagination
+                currentEnd={pagination.end}
+                currentPage={pagination.page}
+                currentStart={pagination.start}
+                itemsPerPage={PAGINATION}
+                onChangePage={this.pageChanged}
+                total={user.friends.length}
+              />
             </article>
             <article style={sharedStyle.leftCard}>
               <form onSubmit={this.addNewFriend}>
