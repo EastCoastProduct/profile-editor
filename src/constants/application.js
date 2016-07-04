@@ -8,4 +8,5 @@ export default Object.freeze({
     { label: 'Male', value: 'Male' },
     { label: 'Other', value: 'Other' },
   ],
+  PAGINATION: 2,
 });

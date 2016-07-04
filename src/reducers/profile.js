@@ -2,10 +2,17 @@
 
 import Actions from '../constants/actions';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS } =
-  Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS,
+  PAGINATION_CHANGED } = Actions;
 
 const initialState = {
+  error: null,
+  pagination: {
+    end: null,
+    numOfPages: null,
+    page: null,
+    start: null,
+  },
   user: {
     bcgImg: {},
     blogs: [],
@@ -24,7 +31,6 @@ const initialState = {
     webId: null,
     workpages: [],
   },
-  error: null,
 };
 
 export default (state = initialState, action) => {
@@ -40,6 +46,15 @@ export default (state = initialState, action) => {
         user: Object.assign({}, state.user, {
           friends: action.friends,
         }),
+      });
+    case PAGINATION_CHANGED:
+      return Object.assign({}, state, {
+        pagination: {
+          end: action.end,
+          numOfPages: action.numOfPages,
+          page: action.page,
+          start: action.start,
+        },
       });
     case PROFILE_GET_FAILED:
     case PROFILE_UPDATE_FAILED:
