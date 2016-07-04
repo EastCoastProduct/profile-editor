@@ -57,10 +57,11 @@ function friendFetchSuccess(friends) {
 }
 
 
-export function pageChanged(page, start, end) {
+export function paginationChanged(page, numOfPages, start, end) {
   return {
     type: PAGINATION_CHANGED,
     page,
+    numOfPages,
     start,
     end,
   };

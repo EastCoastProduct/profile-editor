@@ -3,7 +3,7 @@
 import $rdf from 'rdflib';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { profileFetch, profileUpdate, getFriends, pageChanged }
+import { profileFetch, profileUpdate, getFriends, paginationChanged }
   from '../actions/profile';
 import appConstants from '../constants/application';
 import Radium from 'radium';
@@ -34,7 +34,7 @@ export default class Friends extends Component {
     super();
     this.addNewFriend = this.addNewFriend.bind(this);
     this.deleteFriend = this.deleteFriend.bind(this);
-    this.pageChanged = this.pageChanged.bind(this);
+    this.onPaginationChange = this.onPaginationChange.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +43,12 @@ export default class Friends extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.getProfile(nextProps);
+  }
+
+  onPaginationChange(page, numOfPages, start, end) {
+    const { dispatch } = this.props;
+
+    dispatch(paginationChanged(page, numOfPages, start, end));
   }
 
   getProfile(nextProps) {
@@ -75,9 +81,7 @@ export default class Friends extends Component {
     const array = profile.user.friends;
 
     dispatch(profileUpdate(newValue, item, 'friends', profile.user.source,
-      array, () => {
-        this.getFriends();
-      }));
+      array));
   }
 
   deleteFriend(e, key) {
@@ -89,12 +93,6 @@ export default class Friends extends Component {
 
     dispatch(profileUpdate(undefined, item, 'friends', profile.user.source,
       array));
-  }
-
-  pageChanged(page, start, end) {
-    const { dispatch } = this.props;
-
-    dispatch(pageChanged(page, start, end));
   }
 
   renderFriends() {
@@ -142,7 +140,8 @@ export default class Friends extends Component {
                 currentPage={pagination.page}
                 currentStart={pagination.start}
                 itemsPerPage={PAGINATION}
-                onChangePage={this.pageChanged}
+                numOfPages={pagination.numOfPages}
+                onPaginationChange={this.onPaginationChange}
                 total={user.friends.length}
               />
             </article>

@@ -10,51 +10,54 @@ import paginationStyle from '../styles/components/pagination';
 @Radium
 export default class Pagination extends Component {
   static propTypes = {
-    currentEnd: PropTypes.number.isRequired,
-    currentPage: PropTypes.number.isRequired,
-    currentStart: PropTypes.number.isRequired,
+    currentEnd: PropTypes.number,
+    currentPage: PropTypes.number,
+    currentStart: PropTypes.number,
     itemsPerPage: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
+    numOfPages: PropTypes.number,
+    onPaginationChange: PropTypes.func.isRequired,
     total: PropTypes.number.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.calculateNumOfPages();
+  componentWillMount() {
+    this.calculatePagination();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.calculateNumOfPages(nextProps);
+    this.calculatePagination(nextProps);
   }
 
-  calculateNumOfPages(nextProps) {
-    const { itemsPerPage, total } = nextProps || this.props;
+  calculateNewProps(currentPage, itemsPerPage, total) {
+    const newNumOfPages = Math.ceil(total / itemsPerPage);
+    let newPage = currentPage || 1;
+    newPage = newPage <= newNumOfPages ? newPage : newNumOfPages;
+    const newStart = 1 + (newPage - 1) * itemsPerPage;
+    let newEnd = itemsPerPage + (newPage - 1) * itemsPerPage;
+    newEnd = newEnd < total ? newEnd : total;
+    return { newPage, newNumOfPages, newStart, newEnd };
+  }
 
-    if (this.state) {
-      return this.setState({
-        numOfPages: Math.ceil(total / itemsPerPage),
-      });
+  calculatePagination(nextProps) {
+    const { currentPage, itemsPerPage, numOfPages, onPaginationChange, total } =
+      nextProps || this.props;
+    const { total: oldTotal } = this.props;
+
+    if (!numOfPages || oldTotal !== total) {
+      const p = this.calculateNewProps(currentPage, itemsPerPage, total);
+      onPaginationChange(p.newPage, p.newNumOfPages, p.newStart, p.newEnd);
     }
-    this.state = {
-      numOfPages: Math.ceil(total / itemsPerPage),
-    };
-    return false;
   }
 
   changePage(e, page) {
     e.preventDefault();
-    const { itemsPerPage, onChangePage, total } = this.props;
+    const { itemsPerPage, onPaginationChange, total } = this.props;
 
-    const newStart = 1 + (page - 1) * itemsPerPage;
-    let newEnd = itemsPerPage + (page - 1) * itemsPerPage;
-    newEnd = newEnd < total ? newEnd : total;
-
-    onChangePage(page, newStart, newEnd);
+    const p = this.calculateNewProps(page, itemsPerPage, total);
+    onPaginationChange(p.newPage, p.newNumOfPages, p.newStart, p.newEnd);
   }
 
   paginationShowing() {
-    const { currentEnd, currentStart, total } = this.props;
-    const numOfPages = this.state;
+    const { currentEnd, currentStart, numOfPages, total } = this.props;
 
     if (total === 1) return 'Showing 1 result';
     if (numOfPages <= 1) return `Showing all of ${total} results`;
@@ -66,8 +69,7 @@ export default class Pagination extends Component {
   }
 
   renderPages() {
-    const { currentPage } = this.props;
-    const { numOfPages } = this.state;
+    const { currentPage, numOfPages } = this.props;
 
     const elems = [];
     let i;
@@ -111,8 +113,7 @@ export default class Pagination extends Component {
   }
 
   render() {
-    const { currentPage, total } = this.props;
-    const { numOfPages } = this.state;
+    const { currentPage, numOfPages, total } = this.props;
 
     return (
       total > 0 &&

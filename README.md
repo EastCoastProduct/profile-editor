@@ -21,8 +21,6 @@ And open http://localhost:3000/
 
 TODO:
 
-- pagination (half way finished, needed for friends page to fetch less data if user has many friends and organize it with pagination)
-
 - Validation (using redux-forms)
 
 - use solid.js

@@ -1,18 +1,17 @@
 'use strict';
 
 import Actions from '../constants/actions';
-import appConstants from '../constants/application';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS,
   PAGINATION_CHANGED } = Actions;
-const { PAGINATION } = appConstants;
 
 const initialState = {
   error: null,
   pagination: {
-    end: PAGINATION,
-    page: 1,
-    start: 1,
+    end: null,
+    numOfPages: null,
+    page: null,
+    start: null,
   },
   user: {
     bcgImg: {},
@@ -52,6 +51,7 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, {
         pagination: {
           end: action.end,
+          numOfPages: action.numOfPages,
           page: action.page,
           start: action.start,
         },
