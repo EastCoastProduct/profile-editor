@@ -28,7 +28,9 @@ module.exports = {
     }),
     new webpack.optimize.CommonsChunkPlugin('common-[chunkhash].js'),
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: false
+    }),
     new webpack.optimize.AggressiveMergingPlugin()
   ],
   module: {
@@ -40,5 +42,8 @@ module.exports = {
         exclude: /node_modules/
       }
     ],
-  }
+  },
+  externals:[{
+    xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+  }],
 };
