@@ -24,7 +24,6 @@ export function loginFetch() {
   return dispatch => {
     fetch(AUTH_ENDPOINT, {
       method: 'HEAD',
-      credentials: 'include',
     })
     .then(res => {
       const user = res.headers.get('User');

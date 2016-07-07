@@ -34,6 +34,8 @@
     "babel-polyfill": "^6.9.1",
     "color": "^0.11.1",
     "es6-promise": "^3.2.1",
+    "express": "^4.13.4",
+    "key-mirror": "^1.0.1",
     "lodash": "^4.13.1",
     "parse-link-header": "^0.4.1",
     "radium": "^0.17.1",
@@ -45,7 +47,6 @@
     "redux": "^3.5.2",
     "redux-form": "^5.2.5",
     "redux-thunk": "^2.1.0",
-    "whatwg-fetch": "^1.0.0",
-    "express": "^4.13.4"
+    "whatwg-fetch": "^1.0.0"
   }
 }
