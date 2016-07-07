@@ -1,12 +1,15 @@
 'use strict';
 
 import variables from '../base/variables';
-const { sizes } = variables;
+const { sizes, breakpoints } = variables;
 
 const mixin = {
   newInput: {
     display: 'inline-block',
     verticalAlign: 'top',
+    [`@media (max-width: ${breakpoints.first}px)`]: {
+      display: 'block'
+    }
   },
 };
 
@@ -20,6 +23,12 @@ export default {
     borderRadius: `${sizes.radius}px 0 0 ${sizes.radius}px`,
     marginBottom: 20,
     width: '80%',
+    [`@media (min-width: ${breakpoints.first}px)`]: {
+      width: '100%'
+    },
+    [`@media (min-width: ${breakpoints.second}px)`]: {
+      width: 'calc(100% - 170px)',
+    },
   },
   newButton: {
     ...mixin.newInput,
@@ -27,5 +36,11 @@ export default {
     fontWeight: 'bold',
     padding: 13.5,
     width: '20%',
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      width: 'auto'
+    },
+    [`@media (min-width: ${breakpoints.second}px)`]: {
+      width: 170
+    },
   },
 };

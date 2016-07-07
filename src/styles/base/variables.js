@@ -33,4 +33,9 @@ export default {
   transition: {
     base: 'all 0.3s',
   },
+  breakpoints: {
+    first: 320,
+    second: 520,
+    third: 730,
+  },
 };

@@ -2,7 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import Radium, { Style } from 'radium';
+import Radium, { Style, StyleRoot } from 'radium';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -14,6 +14,7 @@ const globalStyles = _.merge(normalize, defaults);
 
 const App = (props) =>
   <div>
+    <StyleRoot>
     <Style rules={globalStyles} />
     <Header
       title={props.children.props.route.title}
@@ -22,6 +23,7 @@ const App = (props) =>
     />
     <main style={sharedStyle.content}>{props.children}</main>
     <Footer />
+      </StyleRoot>
   </div>;
 
 App.propTypes = {

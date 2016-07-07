@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, transition } = variables;
+const { colors, transition, breakpoints } = variables;
 
 export default {
   overlay: {
@@ -31,6 +31,9 @@ export default {
     ':hover': {
       backgroundColor: colors.font,
     },
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      width: 50,
+    }
   },
   navActive: {
     backgroundColor: color(colors.navigation).lighten(0.5).rgbString(),
