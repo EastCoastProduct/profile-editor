@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, breakpoints } = variables;
+const { breakpoints, colors } = variables;
 
 const mixin = {
   icon: {

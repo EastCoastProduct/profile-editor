@@ -1,7 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
-const { colors, sizes, breakpoints } = variables;
+const { breakpoints, colors, sizes } = variables;
 
 export default {
   base: {

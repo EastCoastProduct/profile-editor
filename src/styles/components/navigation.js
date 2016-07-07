@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, transition, breakpoints } = variables;
+const { breakpoints, colors, transition } = variables;
 
 export default {
   overlay: {

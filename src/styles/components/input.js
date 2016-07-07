@@ -1,7 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
-const { sizes, breakpoints } = variables;
+const { breakpoints, sizes } = variables;
 
 const mixin = {
   newInput: {
