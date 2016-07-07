@@ -28,7 +28,9 @@ const Navigation = ({ onClick, view, webId }) =>
             activeStyle={navStyle.navActive}
           >
             <i style={navStyle.navIcon} className="fa fa-user"></i>
-            {view ? 'Edit profile' : 'View Profile'}
+            <span style={navStyle.navText}>
+              {view ? 'Edit profile' : 'View Profile'}
+            </span>
           </Link>
         </li>
         <li>
@@ -40,7 +42,9 @@ const Navigation = ({ onClick, view, webId }) =>
             activeStyle={navStyle.navActive}
           >
             <i style={navStyle.navIcon} className="fa fa-users"></i>
-            People you know
+            <span style={navStyle.navText}>
+              People you know
+            </span>
           </Link>
         </li>
         <li>
@@ -52,7 +56,9 @@ const Navigation = ({ onClick, view, webId }) =>
           >
             <i style={navStyle.navIcon} className="fa fa-sign-in">
             </i>
-            Login
+            <span style={navStyle.navText}>
+              Login
+            </span>
           </Link>
         </li>
       </ul>

@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, sizes, transition } = variables;
+const { breakpoints, colors, sizes, transition } = variables;
 
 const mixin = {
   coverBtn: {
@@ -23,6 +23,10 @@ const mixin = {
     textAlign: 'center',
     transition: transition.base,
   },
+  nameAndLink: {
+    position: 'absolute',
+    left: 20,
+  },
 };
 
 export default {
@@ -41,6 +45,9 @@ export default {
     padding: '30px 30px 30px 300px',
     position: 'relative',
     textAlign: 'left',
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      height: 120,
+    },
   },
   figure: {
     backgroundColor: colors.card,
@@ -50,6 +57,14 @@ export default {
     left: 30,
     margin: 0,
     position: 'absolute',
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      position: 'relative',
+      bottom: 180,
+      right: 270,
+      left: 'auto',
+      top: 'auto,',
+      width: 210,
+    },
   },
   image: {
     borderRadius: sizes.radius,
@@ -60,6 +75,16 @@ export default {
   },
   name: {
     marginBottom: 10,
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      ...mixin.nameAndLink,
+      bottom: 20,
+    },
+  },
+  linkAnchor: {
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      ...mixin.nameAndLink,
+      bottom: 10,
+    },
   },
   linkIcon: {
     marginRight: 10,

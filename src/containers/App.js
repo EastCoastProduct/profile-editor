@@ -51,18 +51,20 @@ export default class App extends Component {
     const { app, children, location } = this.props;
 
     return (
-      <StyleRoot>
-        <Style rules={globalStyles} />
-        <Header
-          onToggleMenu={this.onToggleMenu}
-          showMenu={app.showMenu}
-          title={children.props.route.title}
-          view={children.props.route.view}
-          webId={location.query.webId}
-        />
-        <main style={sharedStyle.content}>{children}</main>
-        <Footer />
-      </StyleRoot>
+      <div>
+        <StyleRoot>
+          <Style rules={globalStyles} />
+          <Header
+            onToggleMenu={this.onToggleMenu}
+            showMenu={app.showMenu}
+            title={children.props.route.title}
+            view={children.props.route.view}
+            webId={location.query.webId}
+          />
+          <main style={sharedStyle.content}>{children}</main>
+          <Footer />
+        </StyleRoot>
+      </div>
     );
   }
 }

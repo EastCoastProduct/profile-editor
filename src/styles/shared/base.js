@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, sizes } = variables;
+const { breakpoints, colors, sizes } = variables;
 
 const mixin = {
   card: {
@@ -19,6 +19,12 @@ export default {
     minHeight: sizes.mainHeight,
     padding: `${sizes.headerHeight + 50}px 0`,
     width: sizes.container,
+    [`@media (max-width: ${breakpoints.first}px)`]: {
+      width: 310,
+    },
+    [`@media (min-width: ${breakpoints.first}px)`]: {
+      width: '95%',
+    },
   },
   card: {
     ...mixin.card,
