@@ -3,15 +3,14 @@
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
 
-// Style
+// Styles
 import sharedStyle from '../styles/shared/base';
 import selectStyle from '../styles/components/select';
 
-function renderOptions(list) {
-  return list.map((item, key) => {
+const renderOptions = (list) =>
+  list.map((item, key) => {
     return <option value={item.value} key={key}>{item.label}</option>;
   });
-}
 
 const Select = ({ label, options, style, ...other }) =>
   <label style={style}>

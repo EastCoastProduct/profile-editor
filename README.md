@@ -17,12 +17,16 @@ And open http://localhost:3000/
 
 /edit?webId - Profile Edit
 
-/friends?webId - View / Add / Delete Friends
+/friends?webId - Paginated View / Add / Delete Friends
 
-TODO:
+## TODO
 
 - Validation (using redux-forms)
 
 - use solid.js
 
 - tests
+
+## ISSUES
+
+- Authentications isn't working, User header is always empty

@@ -33,19 +33,19 @@ export default class Profile extends Component {
   }
 
   getProfile(nextProps) {
-    const { dispatch, location, profile } = nextProps || this.props;
+    const { dispatch, location, profile: { user, error } } =
+      nextProps || this.props;
 
-    if (location.query.webId && profile.user.webId !== location.query.webId) {
+    if (location.query.webId && location.query.webId !== user.webId && !error) {
       dispatch(profileFetch(location.query.webId));
     }
   }
 
   render() {
-    const { location, profile } = this.props;
-    const { user } = profile;
+    const { location, profile: { user, error } } = this.props;
 
     return (
-      location.query.webId ?
+      location.query.webId && !error ?
         user.webId === location.query.webId &&
           <section>
             <ProfileCover webId={location.query.webId} user={user} />
@@ -93,7 +93,7 @@ export default class Profile extends Component {
             </div>
             <div style={sharedStyle.clearfix}></div>
           </section> :
-        <WebId goTo="/" />
+        <WebId error={error} goTo="/" />
     );
   }
 }
