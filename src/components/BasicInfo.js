@@ -7,7 +7,7 @@ import Input from '../components/Input';
 import Select from '../components/Select';
 const { GENDER_OPTIONS } = AppConstants;
 
-// Style
+// Styles
 import sharedStyle from '../styles/shared/base';
 import basicInfoStyle from '../styles/components/basicInfo';
 

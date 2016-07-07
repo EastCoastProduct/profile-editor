@@ -23,6 +23,11 @@ export default {
     top: 0,
     zIndex: 2,
   },
+  navText: {
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      display: 'none',
+    },
+  },
   navItem: {
     display: 'block',
     fontSize: '1.2em',
@@ -33,7 +38,7 @@ export default {
     },
     [`@media (max-width: ${breakpoints.second}px)`]: {
       width: 50,
-    }
+    },
   },
   navActive: {
     backgroundColor: color(colors.navigation).lighten(0.5).rgbString(),

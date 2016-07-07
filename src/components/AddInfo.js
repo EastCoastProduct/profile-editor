@@ -1,7 +1,7 @@
 'use strict';
 
 import $rdf from 'rdflib';
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
 import Radium from 'radium';
 import Input from './Input';
 
@@ -9,100 +9,92 @@ import Input from './Input';
 import sharedStyle from '../styles/shared/base';
 import addInfoStyle from '../styles/components/addInfo';
 
-@Radium
-export default class AddInfo extends Component {
-  static propTypes = {
-    icon: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    onAddDeleteItem: PropTypes.func.isRequired,
-    predicate: PropTypes.object.isRequired,
-    prefix: PropTypes.string,
-    prop: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    user: PropTypes.object.isRequired,
-    webId: PropTypes.string.isRequired,
-  };
+const addItem = (e, prop, predicate, prefix = '', props) => {
+  const { onAddDeleteItem, user, webId } = props;
+  e.preventDefault();
+  const newValue = `${prefix}${e.target.elements[prop].value}`;
+  const item = $rdf.st($rdf.sym(webId), predicate, $rdf.sym(''),
+    $rdf.sym(''));
+  const array = user[prop];
+  if (array.some((obj) => { return obj.value === newValue; })) return;
 
-  constructor() {
-    super();
-    this.addItem = this.addItem.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-  }
+  onAddDeleteItem(newValue, item, prop, user.source, array);
+};
 
-  addItem(e, prop, predicate, prefix = '') {
-    const { onAddDeleteItem, user, webId } = this.props;
-    e.preventDefault();
-    const newValue = `${prefix}${e.target.elements[prop].value}`;
-    const item = $rdf.st($rdf.sym(webId), predicate, $rdf.sym(''),
-      $rdf.sym(''));
-    const array = user[prop];
-    if (array.some((obj) => { return obj.value === newValue; })) return;
+const deleteItem = (e, prop, key, props) => {
+  const { onAddDeleteItem, user } = props;
+  e.preventDefault();
+  const item = user[prop][key];
+  const array = user[prop];
+  array.splice(key, 1);
 
-    onAddDeleteItem(newValue, item, prop, user.source, array);
-  }
+  onAddDeleteItem(undefined, item, prop, user.source, array);
+};
 
-  deleteItem(e, prop, key) {
-    const { onAddDeleteItem, user } = this.props;
-    e.preventDefault();
-    const item = user[prop][key];
-    const array = user[prop];
-    array.splice(key, 1);
-
-    onAddDeleteItem(undefined, item, prop, user.source, array);
-  }
-
-  renderList(list, prop, prefix) {
-    return list.map((item, key) => {
-      return (
-        <li
-          style={addInfoStyle.listItem}
-          key={`${key}${prop}`}
-          onClick={(e) => this.deleteItem(e, prop, key)}
-        >
-          <p>
-            {item.value && item.value.replace(prefix, '')}
-            <i
-              style={addInfoStyle.listIcon}
-              className="fa fa-trash"
-              key={`0${key}${prop}`}
-            />
-          </p>
-        </li>
-      );
-    });
-  }
-
-  render() {
-    const { icon, name, predicate, prefix, prop, type, user } = this.props;
-
+const renderList = (list, prop, prefix, props) =>
+  list.map((item, key) => {
     return (
-      <article style={sharedStyle.leftCard}>
-        <h3 style={sharedStyle.heading}>
-          <i style={sharedStyle.icon} className={`fa fa-${icon}`} />
-          {`${name}s`}
-        </h3>
-        {user[prop].length > 0 ?
-          <ul>
-            {this.renderList(user[prop], prop, prefix)}
-          </ul> :
-          <p style={sharedStyle.infoMsg}>
-            No items at the moment
-          </p>
-        }
-        <form
-          style={addInfoStyle.form}
-          onSubmit={(e) => this.addItem(e, prop, predicate, prefix)}
-        >
-          <Input
-            style={addInfoStyle.newInput}
-            label={`New ${name}`}
-            name={prop}
-            type={type}
-            placeholder={`${name}`}
-            button={`Add ${name}`}
+      <li
+        style={addInfoStyle.listItem}
+        key={`${key}${prop}`}
+        onClick={(e) => deleteItem(e, prop, key, props)}
+      >
+        <p>
+          {item.value && item.value.replace(prefix, '')}
+          <i
+            style={addInfoStyle.listIcon}
+            className="fa fa-trash"
+            key={`0${key}${prop}`}
           />
-        </form>
-      </article>
+        </p>
+      </li>
     );
-  }
-}
+  });
+
+const AddInfo = props => {
+  const { icon, name, predicate, prefix, prop, type, user } = props;
+
+  return (
+    <article style={sharedStyle.leftCard}>
+      <h3 style={sharedStyle.heading}>
+        <i style={sharedStyle.icon} className={`fa fa-${icon}`} />
+        {`${name}s`}
+      </h3>
+      {user[prop].length > 0 ?
+        <ul>
+          {renderList(user[prop], prop, prefix, props)}
+        </ul> :
+        <p style={sharedStyle.infoMsg}>
+          No items at the moment
+        </p>
+      }
+      <form
+        style={addInfoStyle.form}
+        onSubmit={(e) => addItem(e, prop, predicate, prefix, props)}
+      >
+        <Input
+          style={addInfoStyle.newInput}
+          label={`New ${name}`}
+          name={prop}
+          type={type}
+          placeholder={`${name}`}
+          button={`Add ${name}`}
+        />
+      </form>
+    </article>
+  );
+};
+
+AddInfo.propTypes = {
+  icon: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onAddDeleteItem: PropTypes.func.isRequired,
+  predicate: PropTypes.object.isRequired,
+  prefix: PropTypes.string,
+  prop: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
+  webId: PropTypes.string.isRequired,
+};
+
+export default new Radium(AddInfo);

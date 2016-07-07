@@ -8,8 +8,8 @@ const mixin = {
     display: 'inline-block',
     verticalAlign: 'top',
     [`@media (max-width: ${breakpoints.first}px)`]: {
-      display: 'block'
-    }
+      display: 'block',
+    },
   },
 };
 
@@ -24,7 +24,7 @@ export default {
     marginBottom: 20,
     width: '80%',
     [`@media (min-width: ${breakpoints.first}px)`]: {
-      width: '100%'
+      width: '100%',
     },
     [`@media (min-width: ${breakpoints.second}px)`]: {
       width: 'calc(100% - 170px)',
@@ -37,10 +37,10 @@ export default {
     padding: 13.5,
     width: '20%',
     [`@media (max-width: ${breakpoints.second}px)`]: {
-      width: 'auto'
+      width: 'auto',
     },
     [`@media (min-width: ${breakpoints.second}px)`]: {
-      width: 170
+      width: 170,
     },
   },
 };

@@ -1,13 +1,27 @@
 'use strict';
 
 import variables from '../base/variables';
+import color from 'color';
 const { colors, breakpoints } = variables;
+
+const mixin = {
+  icon: {
+    display: 'inline-block',
+    fontSize: '2em',
+    margin: '0 2px',
+    verticalAlign: 'middle',
+    width: 60,
+  },
+};
 
 export default {
   listItem: {
     borderTop: `1px solid ${colors.background}`,
     padding: 10,
-    },
+  },
+  errItem: {
+    backgroundColor: colors.errorLight,
+  },
   image: {
     border: `1px solid ${colors.background}`,
     borderRadius: '50%',
@@ -22,13 +36,16 @@ export default {
     display: 'inline-block',
     padding: 20,
     verticalAlign: 'middle',
-    width: 'calc(100% - (100px + 60px))',
+    width: 'calc(100% - (100px + 64px))',
     [`@media (max-width: ${breakpoints.second}px)`]: {
       display: 'block',
       width: '100%',
-    }
+    },
   },
-  name: {
+  errDetails: {
+    width: 'calc(100% - (100px + 128px))',
+  },
+  text: {
     marginBottom: 10,
   },
   email: {
@@ -44,12 +61,16 @@ export default {
     },
   },
   trashIcon: {
-    display: 'inline-block',
-    fontSize: '2em',
-    verticalAlign: 'middle',
-    width: 60,
+    ...mixin.icon,
     [`@media (max-width: ${breakpoints.first}px)`]: {
       padding: 0,
+    },
+  },
+  reloadIcon: {
+    ...mixin.icon,
+    color: colors.font,
+    ':hover': {
+      color: color(colors.font).lighten(3).hexString(),
     },
   },
 };

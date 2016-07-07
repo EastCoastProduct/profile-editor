@@ -86,14 +86,14 @@ export default {
       position: 'absolute',
       bottom: 20,
       left: 20,
-    }
+    },
   },
   linkAnchor: {
     [`@media (max-width: ${breakpoints.second}px)`]: {
       position: 'absolute',
       bottom: 10,
       left: 20,
-    }
+    },
   },
   linkIcon: {
     marginRight: 10,

@@ -8,5 +8,6 @@ export default Object.freeze({
     { label: 'Male', value: 'Male' },
     { label: 'Other', value: 'Other' },
   ],
-  PAGINATION: 2,
+  PAGINATION: 5,
+  TIMEOUT: 5000,
 });

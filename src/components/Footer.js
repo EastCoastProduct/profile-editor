@@ -3,13 +3,10 @@
 import React from 'react';
 import Radium from 'radium';
 
-// Styles
+// Style
 import footerStyle from '../styles/components/footer';
 
-function getYear() {
-  const now = new Date();
-  return now.getFullYear();
-}
+const getYear = () => (new Date).getFullYear();
 
 const Footer = () =>
   <footer style={footerStyle.base}>

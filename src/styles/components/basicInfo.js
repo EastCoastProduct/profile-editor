@@ -6,9 +6,10 @@ const { breakpoints } = variables;
 const breakpoint = {
   fullBlock: {
     display: 'block',
-    width: '100%'
-  }
-}
+    width: '100%',
+  },
+};
+
 const mixin = {
   label: {
     display: 'inline-block',
@@ -46,20 +47,20 @@ export default {
     width: '29%',
     [`@media (max-width: ${breakpoints.third}px)`]: {
       ...breakpoint.fullBlock,
-    }
+    },
   },
   fullName: {
     ...mixin.nameAndGender,
     marginRight: '1%',
     [`@media (max-width: ${breakpoints.third}px)`]: {
       ...breakpoint.fullBlock,
-    }
+    },
   },
   gender: {
     ...mixin.nameAndGender,
     marginLeft: '1%',
     [`@media (max-width: ${breakpoints.third}px)`]: {
       ...breakpoint.fullBlock,
-    }
+    },
   },
 };

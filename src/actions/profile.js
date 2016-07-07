@@ -1,16 +1,18 @@
 'use strict';
 
-import 'whatwg-fetch';
+import fetch from '../utils/fetch';
 import $rdf from 'rdflib';
 import path from 'path';
 import _ from 'lodash';
 import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
+import appConstants from '../constants/application';
 import Namespaces from '../constants/namespaces';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS,
-  PAGINATION_CHANGED } = Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, PROFILE_RESET,
+  FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 const { ACL, DCT, FOAF, UI } = Namespaces;
+const { TIMEOUT } = appConstants;
 
 function profileFetchSuccess(user) {
   return {
@@ -19,19 +21,35 @@ function profileFetchSuccess(user) {
   };
 }
 
-function profileFetchFailed(error) {
-  return {
-    type: PROFILE_GET_FAILED,
-    error,
-  };
-}
-
-function profileUpdateSuccess(item, prop) {
+export function profileUpdateSuccess(item, prop) {
   return {
     type: PROFILE_UPDATE_SUCCESS,
     user: {
       [prop]: item,
     },
+  };
+}
+
+function friendFetchSuccess(friends) {
+  return {
+    type: FRIENDS_GET_SUCCESS,
+    friends,
+  };
+}
+
+export function paginationChanged(page, numOfPages, start, end) {
+  return {
+    type: PAGINATION_CHANGED,
+    page,
+    numOfPages,
+    start,
+    end,
+  };
+}
+
+export function profileReset() {
+  return {
+    type: PROFILE_RESET,
   };
 }
 
@@ -49,21 +67,10 @@ function profileImageUploadFailed(error) {
   };
 }
 
-function friendFetchSuccess(friends) {
+function profileFetchFailed(error) {
   return {
-    type: FRIEND_GET_SUCCESS,
-    friends,
-  };
-}
-
-
-export function paginationChanged(page, numOfPages, start, end) {
-  return {
-    type: PAGINATION_CHANGED,
-    page,
-    numOfPages,
-    start,
-    end,
+    type: PROFILE_GET_FAILED,
+    error,
   };
 }
 
@@ -91,18 +98,19 @@ function setDataValues(data) {
 
 function fetchUser(webId, isFriend = false) {
   const g = $rdf.graph();
-  const f = $rdf.fetcher(g);
+  const f = $rdf.fetcher(g, TIMEOUT);
   const docUri = webId.indexOf('#') >= 0 ? webId.slice(0, webId.indexOf('#'))
     : webId;
   const webSym = $rdf.sym(webId);
 
   return new Promise((resolve, reject) => {
     f.nowOrWhenFetched(docUri, (ok, body, xhr) => {
-      if (!ok) {
-        if (isFriend) resolve('Profile not found');
-        reject('Profile not found');
-      }
       const data = {};
+
+      if (!ok) {
+        if (!isFriend) return reject('Profile not found. Try another WebId.');
+        data.error = 'Friend\'s Profile not found.';
+      }
 
       // add webID
       data.webId = webId;
@@ -146,7 +154,7 @@ function fetchUser(webId, isFriend = false) {
       // Friends
       data.friends = g.statementsMatching(webSym, new FOAF('knows'));
 
-      resolve(setDataValues(data));
+      return resolve(setDataValues(data));
     });
   });
 }
@@ -161,7 +169,7 @@ export function profileFetch(webId) {
   };
 }
 
-export function profileUpdate(value, item, prop, source, array, callback) {
+export function profileUpdate(value, item, prop, source, array) {
   return dispatch => {
     let query = '';
     let graphUri = '';
@@ -186,7 +194,6 @@ export function profileUpdate(value, item, prop, source, array, callback) {
 
     fetch(graphUri, {
       method: 'PATCH',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/sparql-update',
       },
@@ -195,11 +202,9 @@ export function profileUpdate(value, item, prop, source, array, callback) {
       if (array) {
         let newArray;
         if (!!value) newArray = array.concat(newS);
-        dispatch(profileUpdateSuccess(newArray || array, prop));
-        if (callback && typeof callback === 'function') callback();
-      } else {
-        dispatch(profileUpdateSuccess(newS, prop));
+        return dispatch(profileUpdateSuccess(newArray || array, prop));
       }
+      return dispatch(profileUpdateSuccess(newS, prop));
     }).catch((err) => {
       dispatch(profileUpdateFailed(err));
     });
@@ -209,7 +214,6 @@ export function profileUpdate(value, item, prop, source, array, callback) {
 function uploadNewImage(newUrl, file) {
   return fetch(newUrl, {
     method: 'PUT',
-    credentials: 'include',
     headers: {
       'Content-Type': file.type,
     },
@@ -220,7 +224,6 @@ function uploadNewImage(newUrl, file) {
 function deleteOldImage(oldUrl) {
   return fetch(oldUrl, {
     method: 'DELETE',
-    credentials: 'include',
   });
 }
 
@@ -260,17 +263,19 @@ export function getFriends(pagFriends, friends, start, itemsPerPage) {
       return item.data;
     });
 
+    // no need for catch method, fetchUser for friends always resolves
     Promise.all(fetches).then((resp) => {
       const newFriends = pagFriends.map((item, index) => {
-        if (!item.data) item.data = resp[index];
+        if (!item.data) {
+          const newItem = item;
+          newItem.data = resp[index];
+          return newItem;
+        }
         return item;
       });
-
       friends.splice(start, itemsPerPage, ...newFriends);
 
       dispatch(friendFetchSuccess(friends));
-    }).catch((err) => {
-      dispatch(profileFetchFailed(err));
     });
   };
 }

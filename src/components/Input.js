@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import Radium from 'radium';
 import Button from './Button';
 
-// Style
+// Styles
 import sharedStyle from '../styles/shared/base';
 import inputStyle from '../styles/components/input';
 

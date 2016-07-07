@@ -6,17 +6,17 @@ import Radium from 'radium';
 import Input from './Input';
 const Link = new Radium(RRLink);
 
-// Style
+// Styles
 import sharedStyle from '../styles/shared/base';
 import webIdStyle from '../styles/components/webId';
 
-function changeRoute(e, goTo, router) {
+const changeRoute = (e, goTo, router) => {
   e.preventDefault();
   const webId = e.target.elements.webid.value;
   router.push(`${goTo}?webId=${encodeURIComponent(webId)}`);
-}
+};
 
-const WebId = ({ goTo, router }) =>
+const WebId = ({ error, goTo, router }) =>
   <section style={sharedStyle.leftCard}>
     <h3 style={sharedStyle.heading}>
       <i style={sharedStyle.icon} className="fa fa-info"></i>
@@ -36,9 +36,11 @@ const WebId = ({ goTo, router }) =>
         type="url"
       />
     </form>
+    {error && <p style={sharedStyle.errMsg}>{error}</p>}
   </section>;
 
 WebId.propTypes = {
+  error: PropTypes.string,
   goTo: PropTypes.string.isRequired,
   router: PropTypes.object.isRequired,
 };

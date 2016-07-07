@@ -1,51 +1,42 @@
 'use strict';
 
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Radium from 'radium';
 import Navigation from './Navigation';
 
-// Styles
+// Style
 import headerStyle from '../styles/components/header';
 
-@Radium
-export default class Header extends Component {
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    view: PropTypes.bool,
-    webId: PropTypes.string,
-  };
+const Header = props => {
+  const { onToggleMenu, showMenu, title, view, webId } = props;
 
-  constructor() {
-    super();
-    this.state = {
-      menuShow: false,
-    };
-  }
+  return (
+    <header style={headerStyle.base}>
+      <h1
+        style={headerStyle.menuText}
+        onClick={() => onToggleMenu(true)}
+      >
+        <i style={headerStyle.menuIcon} className="fa fa-bars" />
+        {title}
+      </h1>
+      {showMenu &&
+        <Navigation
+          onClick={() => onToggleMenu(false)}
+          view={view}
+          webId={webId}
+        />
+      }
+    </header>
+  );
+};
 
-  showMenu(toggle) {
-    this.setState({
-      menuShow: toggle,
-    });
-  }
+Header.propTypes = {
+  onToggleMenu: PropTypes.func.isRequired,
+  showMenu: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  view: PropTypes.bool,
+  webId: PropTypes.string,
+};
 
-  render() {
-    const { menuShow } = this.state;
-    const { title, view, webId } = this.props;
+export default new Radium(Header);
 
-    return (
-      <header style={headerStyle.base}>
-        <h1 style={headerStyle.menuText} onClick={() => this.showMenu(true)}>
-          <i style={headerStyle.menuIcon} className="fa fa-bars" />
-          {title}
-        </h1>
-        {menuShow &&
-          <Navigation
-            onClick={() => this.showMenu(false)}
-            view={view}
-            webId={webId}
-          />
-        }
-      </header>
-    );
-  }
-}

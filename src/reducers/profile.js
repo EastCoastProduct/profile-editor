@@ -2,8 +2,8 @@
 
 import Actions from '../constants/actions';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, FRIEND_GET_SUCCESS,
-  PAGINATION_CHANGED } = Actions;
+  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, PROFILE_RESET,
+  FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 
 const initialState = {
   error: null,
@@ -41,7 +41,7 @@ export default (state = initialState, action) => {
         user: Object.assign({}, state.user, action.user),
         error: null,
       });
-    case FRIEND_GET_SUCCESS:
+    case FRIENDS_GET_SUCCESS:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, {
           friends: action.friends,
@@ -56,6 +56,8 @@ export default (state = initialState, action) => {
           start: action.start,
         },
       });
+    case PROFILE_RESET:
+      return Object.assign({}, initialState);
     case PROFILE_GET_FAILED:
     case PROFILE_UPDATE_FAILED:
     case PROFILE_IMAGE_UPLOAD_FAILED:

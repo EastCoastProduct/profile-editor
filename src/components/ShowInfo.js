@@ -7,8 +7,8 @@ import Radium from 'radium';
 import sharedStyle from '../styles/shared/base';
 import showInfoStyle from '../styles/components/showInfo';
 
-function renderList(list, prefix) {
-  return list.map((item, key) => {
+const renderList = (list, prefix) =>
+  list.map((item, key) => {
     return (
       <li key={key}>
         <a
@@ -27,7 +27,6 @@ function renderList(list, prefix) {
       </li>
     );
   });
-}
 
 const ShowInfo = ({ icon, list, prefix, title }) =>
   <article style={sharedStyle.leftCard}>
@@ -44,7 +43,6 @@ ShowInfo.propTypes = {
   icon: PropTypes.string.isRequired,
   list: PropTypes.array.isRequired,
   prefix: PropTypes.string,
-  style: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
 };
 

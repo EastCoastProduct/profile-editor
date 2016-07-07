@@ -40,36 +40,37 @@ export default class ProfileEdit extends Component {
   }
 
   getProfile(nextProps) {
-    const { dispatch, location, profile } = nextProps || this.props;
+    const { dispatch, location, profile: { user, error } } =
+      nextProps || this.props;
 
-    if (location.query.webId && profile.user.webId !== location.query.webId) {
+    if (location.query.webId && location.query.webId !== user.webId && !error) {
       dispatch(profileFetch(location.query.webId));
     }
   }
 
   uploadImage(e, item, prop) {
-    const { dispatch, profile } = this.props;
+    const { dispatch, profile: { user: { source } } } = this.props;
     e.preventDefault();
     const file = e.target.files[0];
 
     if (!!file) {
-      dispatch(profileImageUpload(file, item, prop, profile.user.source));
+      dispatch(profileImageUpload(file, item, prop, source));
     }
   }
 
   deleteImage(e, item, prop) {
-    const { dispatch, profile } = this.props;
+    const { dispatch, profile: { user: { source } } } = this.props;
     e.preventDefault();
 
-    dispatch(profileImageDelete(item, prop, profile.user.source));
+    dispatch(profileImageDelete(item, prop, source));
   }
 
   updateData(e, item, prop) {
-    const { dispatch, profile } = this.props;
+    const { dispatch, profile: { user: { source } } } = this.props;
     const newValue = e.target.value;
     if (newValue === item.value) return;
 
-    dispatch(profileUpdate(newValue, item, prop, profile.user.source));
+    dispatch(profileUpdate(newValue, item, prop, source));
   }
 
   addDeleteItem(newValue, item, prop, source, array) {
@@ -79,16 +80,15 @@ export default class ProfileEdit extends Component {
   }
 
   render() {
-    const { location, profile } = this.props;
-    const { user } = profile;
+    const { location, profile: { user, error } } = this.props;
 
     return (
-      location.query.webId ?
+      location.query.webId && !error ?
         user.webId === location.query.webId &&
           <section>
             <ProfileCover
               webId={location.query.webId}
-              user={profile.user}
+              user={user}
               onDelete={this.deleteImage}
               onImage={this.uploadImage}
               edit
@@ -147,7 +147,7 @@ export default class ProfileEdit extends Component {
               webId={location.query.webId}
             />
           </section> :
-        <WebId goTo="/edit" />
+        <WebId error={error} goTo="/edit" />
     );
   }
 }
