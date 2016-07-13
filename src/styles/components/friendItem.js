@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors } = variables;
+const { breakpoints, colors } = variables;
 
 const mixin = {
   icon: {
@@ -37,6 +37,10 @@ export default {
     padding: 20,
     verticalAlign: 'middle',
     width: 'calc(100% - (100px + 64px))',
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      display: 'block',
+      width: '100%',
+    },
   },
   errDetails: {
     width: 'calc(100% - (100px + 128px))',
@@ -51,9 +55,16 @@ export default {
   link: {
     color: colors.link,
     display: 'block',
+    [`@media (max-width: ${breakpoints.third}px)`]: {
+      overflow: 'overlay',
+      textOverflow: 'ellipsis',
+    },
   },
   trashIcon: {
     ...mixin.icon,
+    [`@media (max-width: ${breakpoints.first}px)`]: {
+      padding: 0,
+    },
   },
   reloadIcon: {
     ...mixin.icon,

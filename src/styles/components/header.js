@@ -1,7 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
-const { colors, sizes } = variables;
+const { breakpoints, colors, sizes } = variables;
 
 export default {
   base: {
@@ -12,6 +12,9 @@ export default {
     position: 'fixed',
     width: '100%',
     zIndex: 3,
+    [`@media (max-width: ${breakpoints.first}px)`]: {
+      width: 320,
+    },
   },
   menuText: {
     cursor: 'pointer',

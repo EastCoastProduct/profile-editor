@@ -2,7 +2,7 @@
 
 import variables from '../base/variables';
 import color from 'color';
-const { colors, transition } = variables;
+const { breakpoints, colors, transition } = variables;
 
 export default {
   overlay: {
@@ -23,6 +23,11 @@ export default {
     top: 0,
     zIndex: 2,
   },
+  navText: {
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      display: 'none',
+    },
+  },
   navItem: {
     display: 'block',
     fontSize: '1.2em',
@@ -30,6 +35,9 @@ export default {
     transition: transition.base,
     ':hover': {
       backgroundColor: colors.font,
+    },
+    [`@media (max-width: ${breakpoints.second}px)`]: {
+      width: 50,
     },
   },
   navActive: {

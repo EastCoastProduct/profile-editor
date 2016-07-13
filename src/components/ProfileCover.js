@@ -83,7 +83,10 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
       {user.fullName &&
         <h2 style={profileCoverStyle.name}>{user.fullName.value}</h2>
       }
-      <a href={webId} target="_blank">
+      <a
+        style={profileCoverStyle.linkAnchor}
+        href={webId} target="_blank"
+      >
         <i style={profileCoverStyle.linkIcon} className="fa fa-link"></i>
         {webId}
       </a>
