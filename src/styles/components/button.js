@@ -31,4 +31,14 @@ export default {
       color: color(colors.mainBtn).lighten(0.2).hexString(),
     },
   },
+  mainBtnDisabled: {
+    ...mixin.baseBtn,
+    backgroundColor: colors.shadow,
+    color: colors.card,
+  },
+  emptyBtnDisabled: {
+    ...mixin.baseBtn,
+    backgroundColor: colors.card,
+    color: colors.shadow,
+  },
 };

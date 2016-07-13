@@ -8,12 +8,12 @@ import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import appConstants from '../constants/application';
 import Namespaces from '../constants/namespaces';
-const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, PROFILE_RESET,
-  FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
+const { PROFILE_GET_SUCCESS, PROFILE_UPDATE, PROFILE_RESET,
+  PROFILE_ACTION_FAILED, FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 const { ACL, DCT, FOAF, UI } = Namespaces;
 const { TIMEOUT } = appConstants;
 
+// Action creators
 function profileFetchSuccess(user) {
   return {
     type: PROFILE_GET_SUCCESS,
@@ -21,11 +21,26 @@ function profileFetchSuccess(user) {
   };
 }
 
-export function profileUpdateSuccess(item, prop) {
+export function profileUpdateAction(item, prop) {
   return {
-    type: PROFILE_UPDATE_SUCCESS,
+    type: PROFILE_UPDATE,
     user: {
       [prop]: item,
+    },
+  };
+}
+
+export function profileReset() {
+  return {
+    type: PROFILE_RESET,
+  };
+}
+
+function profileActionFailed(type, error) {
+  return {
+    type: PROFILE_ACTION_FAILED,
+    errors: {
+      [type]: error,
     },
   };
 }
@@ -47,33 +62,7 @@ export function paginationChanged(page, numOfPages, start, end) {
   };
 }
 
-export function profileReset() {
-  return {
-    type: PROFILE_RESET,
-  };
-}
-
-function profileUpdateFailed(error) {
-  return {
-    type: PROFILE_UPDATE_FAILED,
-    error,
-  };
-}
-
-function profileImageUploadFailed(error) {
-  return {
-    type: PROFILE_IMAGE_UPLOAD_FAILED,
-    error,
-  };
-}
-
-function profileFetchFailed(error) {
-  return {
-    type: PROFILE_GET_FAILED,
-    error,
-  };
-}
-
+// Asynchronous actions and other functions
 function getStatement(g, subject, predicate, dontCreateStatement) {
   const statement = g.statementsMatching(subject, predicate)[0];
   if (dontCreateStatement) return statement;
@@ -85,10 +74,12 @@ function setDataValues(data) {
   Object.keys(valData).forEach((key) => {
     if (valData[key].constructor.name === 'Statement') {
       valData[key].value = valData[key].object.value || valData[key].object.uri;
+      valData[key].updating = false;
     } else if (Array.isArray(valData[key])) {
       valData[key].forEach((item, arrKey) => {
         if (item.constructor.name !== 'Statement') return false;
         valData[key][arrKey].value = item.object.value || item.object.uri;
+        valData[key][arrKey].updating = false;
         return true;
       });
     }
@@ -164,17 +155,39 @@ export function profileFetch(webId) {
     fetchUser(webId).then((resp) => {
       dispatch(profileFetchSuccess(resp));
     }).catch((err) => {
-      dispatch(profileFetchFailed(err));
+      dispatch(profileActionFailed('get', err));
     });
   };
 }
 
-export function profileUpdate(value, item, prop, source, array) {
+function updatingDispatch(dispatch, st, update, value, prop, array, arrayKey) {
+  const newS = _.cloneDeep(st);
+  newS.updating = update;
+  if (array) {
+    let newArray;
+    if (!!value) {
+      newArray = array.concat(newS);
+    } else if (update) {
+      newArray = _.cloneDeep(array);
+      newArray[arrayKey] = newS;
+    } else {
+      newArray = _.cloneDeep(array);
+      newArray.splice(arrayKey, 1);
+    }
+    return dispatch(profileUpdateAction(newArray, prop));
+  }
+  return dispatch(profileUpdateAction(newS, prop));
+}
+
+export function profileUpdate(value, item, prop, source, array, arrayKey, cb) {
   return dispatch => {
     let query = '';
     let graphUri = '';
     const newS = _.cloneDeep(item);
     const itemProp = item.object.hasOwnProperty('uri') ? 'uri' : 'value';
+
+    // updating
+    updatingDispatch(dispatch, newS, true, value, prop, array, arrayKey);
 
     if (item.object[itemProp]) {
       query += `DELETE DATA { ${item.toNT()} }`;
@@ -199,14 +212,10 @@ export function profileUpdate(value, item, prop, source, array) {
       },
       body: query,
     }).then(() => {
-      if (array) {
-        let newArray;
-        if (!!value) newArray = array.concat(newS);
-        return dispatch(profileUpdateSuccess(newArray || array, prop));
-      }
-      return dispatch(profileUpdateSuccess(newS, prop));
+      updatingDispatch(dispatch, newS, false, value, prop, array, arrayKey);
+      if (typeof cb === 'function') cb();
     }).catch((err) => {
-      dispatch(profileUpdateFailed(err));
+      dispatch(profileActionFailed('update', err.resp.statusText));
     });
   };
 }
@@ -227,6 +236,12 @@ function deleteOldImage(oldUrl) {
   });
 }
 
+function updatingItem(item) {
+  const newS = _.cloneDeep(item);
+  newS.updating = true;
+  return newS;
+}
+
 export function profileImageUpload(file, item, prop, source) {
   return dispatch => {
     const picUrl = `${path.dirname(source.uri)}/${file.name}`;
@@ -236,10 +251,11 @@ export function profileImageUpload(file, item, prop, source) {
       fetches.push(deleteOldImage(item.object.uri || item.object.value));
     }
 
+    dispatch(profileUpdateAction(updatingItem(item), prop));
     Promise.all(fetches).then(() => {
       dispatch(profileUpdate(picUrl, item, prop, source));
     }).catch((err) => {
-      dispatch(profileImageUploadFailed(err));
+      dispatch(profileActionFailed('upload', err));
     });
   };
 }
@@ -248,10 +264,11 @@ export function profileImageDelete(item, prop, source) {
   return dispatch => {
     const deleteUrl = item.object.uri || item.object.value;
 
+    dispatch(profileUpdateAction(updatingItem(item), prop));
     deleteOldImage(deleteUrl).then(() => {
       dispatch(profileUpdate(undefined, item, prop, source));
     }).catch((err) => {
-      dispatch(profileImageUploadFailed(err));
+      dispatch(profileActionFailed('upload', err));
     });
   };
 }

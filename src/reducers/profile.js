@@ -1,12 +1,14 @@
 'use strict';
 
 import Actions from '../constants/actions';
-const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
-  PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, PROFILE_RESET,
-  FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
+const { PROFILE_GET_SUCCESS, PROFILE_UPDATE, PROFILE_RESET,
+  PROFILE_ACTION_FAILED, FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 
 const initialState = {
-  error: null,
+  errors: {
+    get: null,
+    update: null,
+  },
   pagination: {
     end: null,
     numOfPages: null,
@@ -36,10 +38,14 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case PROFILE_GET_SUCCESS:
-    case PROFILE_UPDATE_SUCCESS:
+    case PROFILE_UPDATE:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, action.user),
-        error: null,
+        errors: {
+          get: null,
+          update: null,
+          upload: null,
+        },
       });
     case FRIENDS_GET_SUCCESS:
       return Object.assign({}, state, {
@@ -58,11 +64,9 @@ export default (state = initialState, action) => {
       });
     case PROFILE_RESET:
       return Object.assign({}, initialState);
-    case PROFILE_GET_FAILED:
-    case PROFILE_UPDATE_FAILED:
-    case PROFILE_IMAGE_UPLOAD_FAILED:
+    case PROFILE_ACTION_FAILED:
       return Object.assign({}, state, {
-        error: action.error,
+        errors: Object.assign({}, state.errors, action.errors),
       });
     default:
       return state;

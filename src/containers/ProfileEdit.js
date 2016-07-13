@@ -9,8 +9,12 @@ import Namespaces from '../constants/namespaces';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import AddInfo from '../components/AddInfo';
+import Spinner from '../components/Spinner';
 import WebId from '../components/WebId';
 const { FOAF } = Namespaces;
+
+// Style
+import sharedStyle from '../styles/shared/base';
 
 @connect(state => ({
   profile: state.profile,
@@ -40,11 +44,11 @@ export default class ProfileEdit extends Component {
   }
 
   getProfile(nextProps) {
-    const { dispatch, location, profile: { user, error } } =
-      nextProps || this.props;
+    const { dispatch, location: { query: { webId } },
+      profile: { user, errors } } = nextProps || this.props;
 
-    if (location.query.webId && location.query.webId !== user.webId && !error) {
-      dispatch(profileFetch(location.query.webId));
+    if (webId && webId !== user.webId && !errors.get) {
+      dispatch(profileFetch(webId));
     }
   }
 
@@ -73,81 +77,102 @@ export default class ProfileEdit extends Component {
     dispatch(profileUpdate(newValue, item, prop, source));
   }
 
-  addDeleteItem(newValue, item, prop, source, array) {
+  addDeleteItem(newValue, item, prop, source, array, arrayKey, cb) {
     const { dispatch } = this.props;
 
-    dispatch(profileUpdate(newValue, item, prop, source, array));
+    dispatch(profileUpdate(newValue, item, prop, source, array, arrayKey, cb));
   }
 
   render() {
-    const { location, profile: { user, error } } = this.props;
+    const { location, profile: { user, errors } } = this.props;
 
     return (
-      location.query.webId && !error ?
-        user.webId === location.query.webId &&
-          <section>
-            <ProfileCover
-              webId={location.query.webId}
-              user={user}
-              onDelete={this.deleteImage}
-              onImage={this.uploadImage}
-              edit
-            />
-            <BasicInfo user={user} onUpdate={this.updateData} edit />
-            <AddInfo
-              icon="phone"
-              name="Phone"
-              onAddDeleteItem={this.addDeleteItem}
-              predicate={new FOAF('phone')}
-              prefix="tel:"
-              prop="phones"
-              type="tel"
-              user={user}
-              webId={location.query.webId}
-            />
-            <AddInfo
-              icon="envelope"
-              name="Email"
-              onAddDeleteItem={this.addDeleteItem}
-              predicate={new FOAF('mbox')}
-              prefix="mailto:"
-              prop="emails"
-              type="email"
-              user={user}
-              webId={location.query.webId}
-            />
-            <AddInfo
-              icon="rss"
-              name="Blog"
-              onAddDeleteItem={this.addDeleteItem}
-              predicate={new FOAF('weblog')}
-              prop="blogs"
-              type="url"
-              user={user}
-              webId={location.query.webId}
-            />
-            <AddInfo
-              icon="globe"
-              name="Homepage"
-              onAddDeleteItem={this.addDeleteItem}
-              predicate={new FOAF('homepage')}
-              prop="homepages"
-              type="url"
-              user={user}
-              webId={location.query.webId}
-            />
-            <AddInfo
-              icon="globe"
-              name="Workpage"
-              onAddDeleteItem={this.addDeleteItem}
-              predicate={new FOAF('workplaceHomepage')}
-              prop="workpages"
-              type="url"
-              user={user}
-              webId={location.query.webId}
-            />
-          </section> :
-        <WebId error={error} goTo="/edit" />
+      location.query.webId && !errors.get ?
+        <section>
+          {user.webId === location.query.webId ?
+            <div>
+              <ProfileCover
+                webId={location.query.webId}
+                user={user}
+                onDelete={this.deleteImage}
+                onImage={this.uploadImage}
+                edit
+              />
+              <BasicInfo
+                user={user}
+                errors={errors}
+                onUpdate={this.updateData}
+                edit
+              />
+              <AddInfo
+                formKey="addInfo1"
+                errors={errors}
+                icon="phone"
+                name="Phone"
+                onAddDeleteItem={this.addDeleteItem}
+                predicate={new FOAF('phone')}
+                prefix="tel:"
+                prop="phones"
+                type="tel"
+                user={user}
+                webId={location.query.webId}
+              />
+              <AddInfo
+                formKey="addInfo2"
+                errors={errors}
+                icon="envelope"
+                name="Email"
+                onAddDeleteItem={this.addDeleteItem}
+                predicate={new FOAF('mbox')}
+                prefix="mailto:"
+                prop="emails"
+                type="email"
+                user={user}
+                webId={location.query.webId}
+              />
+              <AddInfo
+                formKey="addInfo3"
+                errors={errors}
+                icon="rss"
+                name="Blog"
+                onAddDeleteItem={this.addDeleteItem}
+                predicate={new FOAF('weblog')}
+                prop="blogs"
+                type="url"
+                user={user}
+                webId={location.query.webId}
+              />
+              <AddInfo
+                formKey="addInfo4"
+                errors={errors}
+                icon="globe"
+                name="Homepage"
+                onAddDeleteItem={this.addDeleteItem}
+                predicate={new FOAF('homepage')}
+                prop="homepages"
+                type="url"
+                user={user}
+                webId={location.query.webId}
+              />
+              <AddInfo
+                formKey="addInfo5"
+                errors={errors}
+                icon="globe"
+                name="Workpage"
+                onAddDeleteItem={this.addDeleteItem}
+                predicate={new FOAF('workplaceHomepage')}
+                prop="workpages"
+                type="url"
+                user={user}
+                webId={location.query.webId}
+              />
+            </div> :
+            <article style={sharedStyle.card}>
+              <Spinner />
+            </article>
+          }
+        </section> :
+        <WebId formKey="webIdEdit" error={errors.get} goTo="/edit" />
     );
   }
 }
