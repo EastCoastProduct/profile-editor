@@ -27,6 +27,8 @@ const BasicInfo = ({ edit, onUpdate, user }) =>
           defaultValue={user.firstName.value}
           onBlur={(e) => onUpdate(e, user.firstName,
               'firstName')}
+          spinner={user.firstName.updating}
+          disabled={user.firstName.updating}
         />
         <Input
           style={basicInfoStyle.lastName}
@@ -35,6 +37,8 @@ const BasicInfo = ({ edit, onUpdate, user }) =>
           placeholder="Last Name"
           defaultValue={user.lastName.value}
           onBlur={(e) => onUpdate(e, user.lastName, 'lastName')}
+          spinner={user.lastName.updating}
+          disabled={user.lastName.updating}
         />
         <Input
           style={basicInfoStyle.nickName}
@@ -43,6 +47,8 @@ const BasicInfo = ({ edit, onUpdate, user }) =>
           placeholder="Nickname"
           defaultValue={user.nickName.value}
           onBlur={(e) => onUpdate(e, user.nickName, 'nickName')}
+          spinner={user.nickName.updating}
+          disabled={user.nickName.updating}
         />
         <Input
           style={basicInfoStyle.fullName}
@@ -51,6 +57,8 @@ const BasicInfo = ({ edit, onUpdate, user }) =>
           placeholder="Full Name"
           defaultValue={user.fullName.value}
           onBlur={(e) => onUpdate(e, user.fullName, 'fullName')}
+          spinner={user.fullName.updating}
+          disabled={user.fullName.updating}
         />
         <Select
           style={basicInfoStyle.gender}
@@ -58,6 +66,8 @@ const BasicInfo = ({ edit, onUpdate, user }) =>
           options={GENDER_OPTIONS}
           defaultValue={user.gender.value}
           onChange={(e) => onUpdate(e, user.gender, 'gender')}
+          spinner={user.gender.updating}
+          disabled={user.gender.updating}
         />
       </form> :
       <dl>

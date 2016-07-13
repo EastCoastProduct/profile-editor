@@ -1,7 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
-const { sizes } = variables;
+const { colors, sizes } = variables;
 
 const mixin = {
   newInput: {
@@ -11,6 +11,13 @@ const mixin = {
 };
 
 export default {
+  holder: {
+    display: 'block',
+    position: 'relative',
+  },
+  newHolder: {
+    marginBottom: 20,
+  },
   input: {
     display: 'block',
     width: '100%',
@@ -18,7 +25,6 @@ export default {
   newInput: {
     ...mixin.newInput,
     borderRadius: `${sizes.radius}px 0 0 ${sizes.radius}px`,
-    marginBottom: 20,
     width: '80%',
   },
   newButton: {
@@ -27,5 +33,23 @@ export default {
     fontWeight: 'bold',
     padding: 13.5,
     width: '20%',
+  },
+  invalid: {
+    border: `1px solid ${colors.error}`,
+  },
+  spinnerHolder: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    display: 'flex',
+    height: 'calc(100% - 2px)',
+    padding: '0 6px',
+    position: 'absolute',
+    right: 1,
+    top: 1,
+  },
+  spinner: {
+    display: 'inline-block',
+    fontSize: '1em',
+    margin: 0,
   },
 };

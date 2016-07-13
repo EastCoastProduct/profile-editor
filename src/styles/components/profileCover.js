@@ -5,6 +5,11 @@ import color from 'color';
 const { colors, sizes, transition } = variables;
 
 const mixin = {
+  coverForm: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   coverBtn: {
     boxShadow: `0 2px 10px ${colors.shadow}`,
     cursor: 'pointer',
@@ -17,11 +22,27 @@ const mixin = {
       opacity: 1,
     },
   },
+  profileForm: {
+    color: colors.card,
+    left: 5,
+    position: 'absolute',
+    bottom: 5,
+    width: 'calc(100% - 10px)',
+  },
   profileBtn: {
     cursor: 'pointer',
     display: 'block',
     textAlign: 'center',
     transition: transition.base,
+  },
+  coverSpinner: {
+    backgroundColor: colors.card,
+    padding: 10,
+  },
+  profileSpinner: {
+    backgroundColor: color(colors.font).lighten(0.5).alpha(sizes.opacityLow)
+                       .rgbaString(),
+    padding: 10,
   },
 };
 
@@ -65,21 +86,14 @@ export default {
     marginRight: 10,
   },
   coverForm: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    ...mixin.coverForm,
   },
   profileForm: {
-    color: colors.card,
-    left: 5,
-    position: 'absolute',
-    bottom: 5,
-    width: 'calc(100% - 10px)',
+    ...mixin.profileForm,
   },
   coverBtn: {
     ...mixin.coverBtn,
-    backgroundColor: colors.card,
-    padding: 10,
+    ...mixin.coverSpinner,
     textTransform: 'uppercase',
   },
   trashCoverBtn: {
@@ -91,9 +105,7 @@ export default {
   },
   profileBtn: {
     ...mixin.profileBtn,
-    backgroundColor: color(colors.font).lighten(0.5).alpha(sizes.opacityLow)
-                       .rgbaString(),
-    padding: 10,
+    ...mixin.profileSpinner,
     ':hover': {
       backgroundColor: color(colors.font).lighten(0.5).alpha(sizes.opacity)
                          .rgbaString(),
@@ -113,5 +125,19 @@ export default {
   cameraIcon: {
     display: 'block',
     marginBottom: 10,
+  },
+  coverSpinnerHolder: {
+    ...mixin.coverForm,
+    ...mixin.coverBtn,
+    ...mixin.coverSpinner,
+  },
+  coverSpinner: {
+    fontSize: '1em',
+    margin: 0,
+  },
+  profileSpinnerHolder: {
+    ...mixin.profileForm,
+    ...mixin.profileBtn,
+    ...mixin.profileSpinner,
   },
 };

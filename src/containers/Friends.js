@@ -12,7 +12,7 @@ import Namespaces from '../constants/namespaces';
 import Spinner from '../components/Spinner';
 import FriendItem from '../components/FriendItem';
 import Pagination from '../components/Pagination';
-import Input from '../components/Input';
+import FriendsForm from '../components/FriendsForm';
 import WebId from '../components/WebId';
 const { FOAF } = Namespaces;
 const { PAGINATION } = appConstants;
@@ -49,11 +49,11 @@ export default class Friends extends Component {
   }
 
   getProfile(nextProps) {
-    const { dispatch, location, profile } = nextProps || this.props;
+    const { dispatch, location: { query: { webId } },
+      profile: { errors, user } } = nextProps || this.props;
 
-    if (location.query.webId && location.query.webId !== profile.user.webId &&
-      !profile.error) {
-      return dispatch(profileFetch(location.query.webId));
+    if (webId && webId !== user.webId && !errors.get) {
+      return dispatch(profileFetch(webId));
     }
     return this.getFriends(nextProps);
   }
@@ -82,15 +82,13 @@ export default class Friends extends Component {
     });
   }
 
-  addNewFriend(e) {
+  addNewFriend(value, cb) {
     const { dispatch, location, profile } = this.props;
-    e.preventDefault();
-    const newValue = e.target.elements.friend.value;
     const item = $rdf.st($rdf.sym(location.query.webId), new FOAF('knows'),
       $rdf.sym(''), $rdf.sym(''));
     const { source, friends } = this.getVariables(profile);
 
-    dispatch(profileUpdate(newValue, item, 'friends', source, friends));
+    dispatch(profileUpdate(value, item, 'friends', source, friends, null, cb));
   }
 
   deleteFriend(e, key) {
@@ -98,9 +96,8 @@ export default class Friends extends Component {
     e.preventDefault();
     const item = profile.user.friends[key];
     const { source, friends } = this.getVariables(profile);
-    friends.splice(key, 1);
 
-    dispatch(profileUpdate(undefined, item, 'friends', source, friends));
+    dispatch(profileUpdate(undefined, item, 'friends', source, friends, key));
   }
 
   reloadFriend(e, key) {
@@ -137,12 +134,12 @@ export default class Friends extends Component {
   }
 
   render() {
-    const { location, profile, profile: { pagination, user, error } } =
+    const { location, profile, profile: { pagination, user, errors } } =
       this.props;
     const { pagFriendsFilter } = this.getVariables(profile);
 
     return (
-      location.query.webId && !error ?
+      location.query.webId && !errors.get ?
         <section>
           <article style={sharedStyle.leftCard}>
             {user.webId === location.query.webId ?
@@ -151,14 +148,14 @@ export default class Friends extends Component {
                   <i style={sharedStyle.icon} className="fa fa-users" />
                   Friends of {user.fullName.value}
                 </h3>
+                {pagFriendsFilter &&
+                  <Spinner />
+                }
                 {user.friends.length > 0 ?
                   <ul>{this.renderFriends()}</ul> :
                   <p style={sharedStyle.infoMsg}>
                     There are no friends at the moment.
                   </p>
-                }
-                {pagFriendsFilter &&
-                  <Spinner />
                 }
                 <Pagination
                   currentEnd={pagination.end}
@@ -173,21 +170,14 @@ export default class Friends extends Component {
             }
           </article>
           {user.webId === location.query.webId &&
-            <article style={sharedStyle.leftCard}>
-              <form onSubmit={this.addNewFriend}>
-                <Input
-                  style={friendsStyle.label}
-                  label="New Friend"
-                  name="friend"
-                  type="url"
-                  placeholder="WebId of your friend"
-                  button="Add Friend"
-                />
-              </form>
-            </article>
+            <FriendsForm
+              formKey="friendsForm"
+              onAddNewFriend={this.addNewFriend}
+              user={user}
+            />
           }
         </section> :
-        <WebId error={error} goTo="/friends" />
+        <WebId formKey="WebIdFriends" error={errors.get} goTo="/friends" />
     );
   }
 }

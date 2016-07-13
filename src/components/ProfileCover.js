@@ -2,6 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
+import Spinner from './Spinner';
 
 // Styles
 import sharedStyle from '../styles/shared/base';
@@ -12,7 +13,12 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
     style={[sharedStyle.card, profileCoverStyle.basicInfo, user.bcgImg.value &&
       { backgroundImage: `url(${user.bcgImg.value})` }]}
   >
-    {edit &&
+    {edit && user.bcgImg.updating &&
+      <div style={profileCoverStyle.coverSpinnerHolder}>
+        <Spinner style={profileCoverStyle.coverSpinner} />
+      </div>
+    }
+    {edit && !user.bcgImg.updating &&
       <form style={profileCoverStyle.coverForm}>
         {!!user.bcgImg.value &&
           <label
@@ -36,7 +42,12 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
     }
     <div style={profileCoverStyle.info}>
       <figure style={profileCoverStyle.figure}>
-        {edit &&
+        {edit && user.profileImg.updating &&
+          <div style={profileCoverStyle.profileSpinnerHolder}>
+            <Spinner />
+          </div>
+        }
+        {edit && !user.profileImg.updating &&
           <form style={profileCoverStyle.profileForm}>
             <label style={profileCoverStyle.profileBtn} key="2">
               <i
