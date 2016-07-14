@@ -7,6 +7,7 @@ import _ from 'lodash';
 import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import appConstants from '../constants/application';
+import crap from './mock';
 import Namespaces from '../constants/namespaces';
 const { PROFILE_GET_SUCCESS, PROFILE_GET_FAILED, PROFILE_UPDATE_SUCCESS,
   PROFILE_UPDATE_FAILED, PROFILE_IMAGE_UPLOAD_FAILED, PROFILE_RESET,
@@ -96,15 +97,17 @@ function setDataValues(data) {
   return valData;
 }
 
-function fetchUser(webId, isFriend = false) {
+export function fetchUser(webId, isFriend = false) {
   const g = $rdf.graph();
   const f = $rdf.fetcher(g, TIMEOUT);
+  console.log (f);
   const docUri = webId.indexOf('#') >= 0 ? webId.slice(0, webId.indexOf('#'))
     : webId;
   const webSym = $rdf.sym(webId);
 
   return new Promise((resolve, reject) => {
     f.nowOrWhenFetched(docUri, (ok, body, xhr) => {
+      console.log ('Ne ne ne ne ne ne');
       const data = {};
 
       if (!ok) {
@@ -160,13 +163,13 @@ function fetchUser(webId, isFriend = false) {
 }
 
 export function profileFetch(webId) {
-  return dispatch => {
-    fetchUser(webId).then((resp) => {
-      dispatch(profileFetchSuccess(resp));
-    }).catch((err) => {
-      dispatch(profileFetchFailed(err));
+  return dispatch =>
+     fetchUser(webId).then ((resp) => {
+      dispatch (profileFetchSuccess (resp));
+    }).catch ((err) => {
+      dispatch (profileFetchFailed (err));
     });
-  };
+
 }
 
 export function profileUpdate(value, item, prop, source, array) {
@@ -277,5 +280,13 @@ export function getFriends(pagFriends, friends, start, itemsPerPage) {
 
       dispatch(friendFetchSuccess(friends));
     });
+ 
   };
 }
+
+
+
+// dummy
+// export function dummy(cb) {
+//   console.log('I CALL CRAP', crap(cb));
+// }
