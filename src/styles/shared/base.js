@@ -22,7 +22,7 @@ export default {
     [`@media (max-width: ${breakpoints.first}px)`]: {
       width: 310,
     },
-    [`@media (min-width: ${breakpoints.first}px)`]: {
+    [`@media (max-width: ${breakpoints.max}px)`]: {
       width: '95%',
     },
   },
