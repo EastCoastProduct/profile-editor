@@ -59,11 +59,24 @@ const Navigation = ({ loginWebId, onClick, onLogout, view, webId }) =>
             </span>
           </Link>
         </li>
+        <li>
+          <Link
+            style={navStyle.navItem}
+            to="/setWebId"
+            key="3"
+            activeStyle={navStyle.navActive}
+          >
+            <i style={navStyle.navIcon} className="fa fa-link" />
+            <span style={navStyle.navText}>
+              Set WebId
+            </span>
+          </Link>
+        </li>
         {!!loginWebId ?
           <li>
             <a
               style={navStyle.navItem}
-              key="3"
+              key="4"
               onClick={(e) => logout(e, onLogout)}
               href
             >
@@ -77,7 +90,7 @@ const Navigation = ({ loginWebId, onClick, onLogout, view, webId }) =>
             <Link
               style={navStyle.navItem}
               to="/login"
-              key="4"
+              key="5"
               activeStyle={navStyle.navActive}
             >
               <i style={navStyle.navIcon} className="fa fa-sign-in" />

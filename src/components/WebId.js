@@ -22,7 +22,7 @@ const validate = values => {
 };
 
 const changeRoute = (goTo, router, webId) => {
-  router.push({ pathname: goTo, query: { webId } });
+  router.push({ pathname: goTo || '/', query: { webId } });
 };
 
 const WebId = ({ errorMsg, goTo, router, fields: { webId }, handleSubmit }) =>
@@ -54,7 +54,7 @@ const WebId = ({ errorMsg, goTo, router, fields: { webId }, handleSubmit }) =>
 WebId.propTypes = {
   ...propTypes,
   errorMsg: PropTypes.string,
-  goTo: PropTypes.string.isRequired,
+  goTo: PropTypes.string,
   router: PropTypes.object.isRequired,
 };
 
