@@ -8,6 +8,8 @@ import Login from '../containers/Login';
 import Profile from '../containers/Profile';
 import ProfileEdit from '../containers/ProfileEdit';
 import Friends from '../containers/Friends';
+import WebId from '../components/WebId';
+import Page404 from '../components/Page404';
 
 const Routes = ({ store, history }) =>
   <Provider store={store}>
@@ -17,6 +19,8 @@ const Routes = ({ store, history }) =>
         <Route path="edit" component={ProfileEdit} title="Edit Profile" />
         <Route path="login" component={Login} title="Login" />
         <Route path="friends" component={Friends} title="Friends" />
+        <Route path="setWebId" component={WebId} title="Set WebId" />
+        <Route path="*" component={Page404} title="Page 404" />
       </Route>
     </Router>
   </Provider>;
