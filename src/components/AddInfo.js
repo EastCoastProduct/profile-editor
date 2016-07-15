@@ -1,6 +1,6 @@
 'use strict';
 
-import $rdf from 'rdflib';
+import { rdflib as $rdf } from 'solid-client';
 import React, { PropTypes } from 'react';
 import { reduxForm, propTypes } from 'redux-form';
 import Radium from 'radium';

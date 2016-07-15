@@ -8,7 +8,8 @@ import Navigation from './Navigation';
 import headerStyle from '../styles/components/header';
 
 const Header = props => {
-  const { onToggleMenu, showMenu, title, view, webId } = props;
+  const { loginWebId, onLogout, onToggleMenu, showMenu, title, view, webId } =
+    props;
 
   return (
     <header style={headerStyle.base}>
@@ -21,7 +22,9 @@ const Header = props => {
       </h1>
       {showMenu &&
         <Navigation
+          loginWebId={loginWebId}
           onClick={() => onToggleMenu(false)}
+          onLogout={onLogout}
           view={view}
           webId={webId}
         />
@@ -31,6 +34,8 @@ const Header = props => {
 };
 
 Header.propTypes = {
+  loginWebId: PropTypes.string,
+  onLogout: PropTypes.func.isRequired,
   onToggleMenu: PropTypes.func.isRequired,
   showMenu: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,

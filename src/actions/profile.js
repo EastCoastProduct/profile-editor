@@ -1,17 +1,19 @@
 'use strict';
 
-import fetch from '../utils/fetch';
-import $rdf from 'rdflib';
+import solid, { rdflib as $rdf, vocab } from 'solid-client';
 import path from 'path';
 import _ from 'lodash';
-import parseLinkHeader from 'parse-link-header';
 import Actions from '../constants/actions';
 import appConstants from '../constants/application';
-import Namespaces from '../constants/namespaces';
 const { PROFILE_GET_SUCCESS, PROFILE_UPDATE, PROFILE_RESET,
   PROFILE_ACTION_FAILED, FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
-const { ACL, DCT, FOAF, UI } = Namespaces;
 const { TIMEOUT } = appConstants;
+
+// Solid config
+solid.config.timeout = TIMEOUT;
+solid.vocab.ui = function wrapper(term) {
+  return (new $rdf.Namespace('http://www.w3.org/ns/ui#'))(term);
+};
 
 // Action creators
 function profileFetchSuccess(user) {
@@ -63,10 +65,13 @@ export function paginationChanged(page, numOfPages, start, end) {
 }
 
 // Asynchronous actions and other functions
-function getStatement(g, subject, predicate, dontCreateStatement) {
-  const statement = g.statementsMatching(subject, predicate)[0];
-  if (dontCreateStatement) return statement;
-  return statement || $rdf.st(subject, predicate, $rdf.lit(''), $rdf.sym(''));
+function getStatement(profile, sub, pred, isArray, dontCreateStatement) {
+  const newS = $rdf.st(sub, pred, $rdf.lit(''), $rdf.sym(''));
+  if (!profile || !profile.parsedGraph) return isArray ? [] : newS;
+  const statement = profile.parsedGraph.statementsMatching(sub, pred);
+  if (isArray) return statement;
+  if (dontCreateStatement) return statement[0];
+  return statement[0] || newS;
 }
 
 function setDataValues(data) {
@@ -87,66 +92,64 @@ function setDataValues(data) {
   return valData;
 }
 
-function fetchUser(webId, isFriend = false) {
-  const g = $rdf.graph();
-  const f = $rdf.fetcher(g, TIMEOUT);
-  const docUri = webId.indexOf('#') >= 0 ? webId.slice(0, webId.indexOf('#'))
-    : webId;
+function setData(profile, webId, error) {
   const webSym = $rdf.sym(webId);
+  const data = {};
 
-  return new Promise((resolve, reject) => {
-    f.nowOrWhenFetched(docUri, (ok, body, xhr) => {
-      const data = {};
+  // add webID
+  data.webId = profile ? profile.webId : webId;
 
-      if (!ok) {
-        if (!isFriend) return reject('Profile not found. Try another WebId.');
-        data.error = 'Friend\'s Profile not found.';
-      }
+  // error
+  if (error) data.error = error;
 
-      // add webID
-      data.webId = webId;
+  // add source
+  let docName = getStatement(profile, webSym, vocab.dct('title'));
+  docName = docName ? docName.object.value : 'Public Profile';
 
-      // add source
-      let docName = g.statementsMatching($rdf.sym(docUri), new DCT('title'))[0];
-      docName = docName ? docName.object.value : 'Public Profile';
+  if (profile && profile.response.types && profile.response.types.some(itm =>
+    itm === 'http://www.w3.org/ns/ldp#Resource')) {
+    data.source = {
+      uri: profile.response.url,
+      name: docName,
+    };
+  }
 
-      if (xhr.getResponseHeader('Link')) {
-        const lh = parseLinkHeader(xhr.getResponseHeader('Link'));
-        if (lh.type && lh.type.url === 'http://www.w3.org/ns/ldp#Resource') {
-          data.source = {
-            uri: docUri,
-            name: docName,
-          };
-        }
-      }
+  // add keystore
+  data.keystore = getStatement(profile, webSym, vocab.acl('keystore'));
 
-      // add keystore
-      data.keystore = getStatement(g, webSym, new ACL('keystore'));
+  // info
+  data.fullName = getStatement(profile, webSym, vocab.foaf('name'));
+  data.firstName = getStatement(profile, webSym, vocab.foaf('givenName'));
+  data.lastName = getStatement(profile, webSym, vocab.foaf('familyName'));
+  data.nickName = getStatement(profile, webSym, vocab.foaf('nick'));
+  data.gender = getStatement(profile, webSym, vocab.foaf('gender'));
+  data.profileImg =
+    getStatement(profile, webSym, vocab.foaf('img'), null, true) ||
+    getStatement(profile, webSym, vocab.foaf('depiction'), null, true) ||
+    getStatement(profile, webSym, vocab.foaf('img'));
+  data.bcgImg = getStatement(profile, webSym, vocab.ui('backgroundImage'));
 
-      // info
-      data.fullName = getStatement(g, webSym, new FOAF('name'));
-      data.firstName = getStatement(g, webSym, new FOAF('givenName'));
-      data.lastName = getStatement(g, webSym, new FOAF('familyName'));
-      data.nickName = getStatement(g, webSym, new FOAF('nick'));
-      data.gender = getStatement(g, webSym, new FOAF('gender'));
-      data.profileImg = getStatement(g, webSym, new FOAF('img'), true) ||
-        getStatement(g, webSym, new FOAF('depiction'), true) ||
-        getStatement(g, webSym, new FOAF('img'));
-      data.bcgImg = getStatement(g, webSym, new UI('backgroundImage'));
+  // array collections
+  data.phones = getStatement(profile, webSym, vocab.foaf('phone'), true);
+  data.emails = getStatement(profile, webSym, vocab.foaf('mbox'), true);
+  data.blogs = getStatement(profile, webSym, vocab.foaf('weblog'), true);
+  data.homepages =
+    getStatement(profile, webSym, vocab.foaf('homepage'), true);
+  data.workpages = getStatement(profile, webSym,
+    vocab.foaf('workplaceHomepage'), true);
 
-      // array collections
-      data.phones = g.statementsMatching(webSym, new FOAF('phone'));
-      data.emails = g.statementsMatching(webSym, new FOAF('mbox'));
-      data.blogs = g.statementsMatching(webSym, new FOAF('weblog'));
-      data.homepages = g.statementsMatching(webSym, new FOAF('homepage'));
-      data.workpages =
-        g.statementsMatching(webSym, new FOAF('workplaceHomepage'));
+  // Friends
+  data.friends = getStatement(profile, webSym, vocab.foaf('knows'), true);
 
-      // Friends
-      data.friends = g.statementsMatching(webSym, new FOAF('knows'));
+  return setDataValues(data);
+}
 
-      return resolve(setDataValues(data));
-    });
+function fetchUser(webId, isFriend = false) {
+  return solid.getProfile(webId).then((profile) => {
+    return setData(profile, webId);
+  }).catch((err) => {
+    if (isFriend) return setData(null, webId, err.message);
+    throw err;
   });
 }
 
@@ -155,7 +158,7 @@ export function profileFetch(webId) {
     fetchUser(webId).then((resp) => {
       dispatch(profileFetchSuccess(resp));
     }).catch((err) => {
-      dispatch(profileActionFailed('get', err));
+      dispatch(profileActionFailed('get', err.message));
     });
   };
 }
@@ -181,8 +184,9 @@ function updatingDispatch(dispatch, st, update, value, prop, array, arrayKey) {
 
 export function profileUpdate(value, item, prop, source, array, arrayKey, cb) {
   return dispatch => {
-    let query = '';
-    let graphUri = '';
+    const oldTriples = [];
+    const newTriples = [];
+    let patchUri;
     const newS = _.cloneDeep(item);
     const itemProp = item.object.hasOwnProperty('uri') ? 'uri' : 'value';
 
@@ -190,28 +194,20 @@ export function profileUpdate(value, item, prop, source, array, arrayKey, cb) {
     updatingDispatch(dispatch, newS, true, value, prop, array, arrayKey);
 
     if (item.object[itemProp]) {
-      query += `DELETE DATA { ${item.toNT()} }`;
-      graphUri = source.uri;
-
-      if (!!value) query += ' ;\n';
+      oldTriples.push(item.toNT());
+      patchUri = source.uri;
     }
 
     if (!!value) {
       newS.object[itemProp] = newS.value = value;
       newS.why.uri = source.uri;
-      query += `INSERT DATA { ${newS.toNT()} }`;
-      graphUri = source.uri;
+      newTriples.push(newS.toNT());
+      patchUri = source.uri;
     } else {
       newS.object[itemProp] = newS.value = value;
     }
 
-    fetch(graphUri, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/sparql-update',
-      },
-      body: query,
-    }).then(() => {
+    solid.web.patch(patchUri, oldTriples, newTriples).then(() => {
       updatingDispatch(dispatch, newS, false, value, prop, array, arrayKey);
       if (typeof cb === 'function') cb();
     }).catch((err) => {
@@ -221,19 +217,11 @@ export function profileUpdate(value, item, prop, source, array, arrayKey, cb) {
 }
 
 function uploadNewImage(newUrl, file) {
-  return fetch(newUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': file.type,
-    },
-    body: file,
-  });
+  return solid.web.put(newUrl, file);
 }
 
 function deleteOldImage(oldUrl) {
-  return fetch(oldUrl, {
-    method: 'DELETE',
-  });
+  return solid.web.del(oldUrl);
 }
 
 function updatingItem(item) {

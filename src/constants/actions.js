@@ -3,8 +3,10 @@
 import keyMirror from 'key-mirror';
 
 export default keyMirror({
+  LOGIN_FETCHING: null,
   LOGIN_SUCCESS: null,
   LOGIN_FAILED: null,
+  LOGOUT_SUCCESS: null,
 
   PROFILE_GET_SUCCESS: null,
   PROFILE_UPDATE: null,

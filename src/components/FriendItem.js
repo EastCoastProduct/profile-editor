@@ -37,7 +37,7 @@ const FriendItem = ({ data, index, onDelete, onReload }) =>
         <p style={friendItemStyle.text}>{data.webId}</p> :
         <Link
           style={friendItemStyle.link}
-          to={`/?webId=${encodeURIComponent(data.webId)}`}
+          to={{ pathname: '/', query: { webId: data.webId } }}
         >
           {data.webId}
         </Link>

@@ -20,4 +20,10 @@ export default {
       width: '100%',
     },
   },
+  spinner: {
+    display: 'inline-block',
+    fontSize: '1em',
+    margin: '0 0 0 10px',
+    verticalAlign: 'top',
+  },
 };
