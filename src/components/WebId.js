@@ -22,10 +22,10 @@ const validate = values => {
 };
 
 const changeRoute = (goTo, router, webId) => {
-  router.push(`${goTo}?webId=${encodeURIComponent(webId)}`);
+  router.push({ pathname: goTo, query: { webId } });
 };
 
-const WebId = ({ error, goTo, router, fields: { webId }, handleSubmit }) =>
+const WebId = ({ errorMsg, goTo, router, fields: { webId }, handleSubmit }) =>
   <section style={sharedStyle.leftCard}>
     <h3 style={sharedStyle.heading}>
       <i style={sharedStyle.icon} className="fa fa-info"></i>
@@ -48,12 +48,12 @@ const WebId = ({ error, goTo, router, fields: { webId }, handleSubmit }) =>
         <p style={sharedStyle.errMsg}>{webId.error}</p>
       }
     </form>
-    {error && <p style={sharedStyle.errMsg}>{error}</p>}
+    {errorMsg && <p style={sharedStyle.errMsg}>{errorMsg}</p>}
   </section>;
 
 WebId.propTypes = {
   ...propTypes,
-  error: PropTypes.string,
+  errorMsg: PropTypes.string,
   goTo: PropTypes.string.isRequired,
   router: PropTypes.object.isRequired,
 };

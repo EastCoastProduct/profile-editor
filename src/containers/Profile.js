@@ -100,7 +100,7 @@ export default class Profile extends Component {
             </article>
           }
         </section> :
-        <WebId formKey="webIdProfile" error={errors.get} goTo="/" />
+        <WebId formKey="webIdProfile" errorMsg={errors.get} goTo="/" />
     );
   }
 }

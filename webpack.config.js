@@ -30,13 +30,20 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['babel-loader', 'eslint-loader'],
-      exclude: /node_modules/
-    }]
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['babel-loader', 'eslint-loader'],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
+      }
+    ]
   },
   externals:[{
-    xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+    xhr2: 'XMLHttpRequest',
+    xmlhttprequest: 'XMLHttpRequest'
   }],
 };
