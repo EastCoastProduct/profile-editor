@@ -4,18 +4,29 @@ import variables from '../base/variables';
 import color from 'color';
 const { colors, transition } = variables;
 
+const mixin = {
+  icon: {
+    color: colors.mainBtn,
+    fontSize: '1em',
+    margin: '0 0 0 10px',
+  },
+};
+
 export default {
   listItem: {
     marginBottom: 5,
   },
   listIcon: {
-    color: colors.mainBtn,
+    ...mixin.icon,
     cursor: 'pointer',
-    marginLeft: 10,
     transition: transition.base,
     ':hover': {
       color: color(colors.mainBtn).lighten(0.2).rgbString(),
     },
+  },
+  spinner: {
+    ...mixin.icon,
+    display: 'inline-block',
   },
   form: {
     marginTop: 20,

@@ -2,6 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
+import Spinner from './Spinner';
 
 // Styles
 import sharedStyle from '../styles/shared/base';
@@ -12,15 +13,22 @@ const renderOptions = (list) =>
     return <option value={item.value} key={key}>{item.label}</option>;
   });
 
-const Select = ({ label, options, style, ...other }) =>
+const Select = ({ label, options, spinner, style, ...other }) =>
   <label style={style}>
     <b style={sharedStyle.labelText}>{label}</b>
-    <select
-      style={selectStyle.base}
-      {...other}
-    >
-      {renderOptions(options)}
-    </select>
+    <span style={selectStyle.holder}>
+      <select
+        style={selectStyle.base}
+        {...other}
+      >
+        {renderOptions(options)}
+      </select>
+      {spinner &&
+        <span style={selectStyle.spinnerHolder}>
+          <Spinner style={selectStyle.spinner} />
+        </span>
+      }
+    </span>
   </label>;
 
 Select.propTypes = {
@@ -29,6 +37,7 @@ Select.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.string,
   })),
+  spinner: PropTypes.bool,
   style: PropTypes.object.isRequired,
 };
 

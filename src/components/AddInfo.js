@@ -2,23 +2,47 @@
 
 import $rdf from 'rdflib';
 import React, { PropTypes } from 'react';
+import { reduxForm, propTypes } from 'redux-form';
 import Radium from 'radium';
 import Input from './Input';
+import Spinner from './Spinner';
 
 // Styles
 import sharedStyle from '../styles/shared/base';
 import addInfoStyle from '../styles/components/addInfo';
 
-const addItem = (e, prop, predicate, prefix = '', props) => {
-  const { onAddDeleteItem, user, webId } = props;
-  e.preventDefault();
-  const newValue = `${prefix}${e.target.elements[prop].value}`;
+// Validation
+import { isRequired, isPhone, isEmail, isUrl, isDuplicate }
+  from '../utils/validator';
+const fields = ['newItem'];
+const validate = (values, { name, prefix, prop, type, user }) => {
+  const errors = {};
+  let rule;
+
+  if (type === 'tel') {
+    rule = isPhone(values.newItem);
+  } else if (type === 'email') {
+    rule = isEmail(values.newItem);
+  } else if (type === 'url') {
+    rule = isUrl(values.newItem);
+  }
+
+  errors.newItem = isRequired(values.newItem) || rule ||
+    isDuplicate(values.newItem, user[prop], prefix, name);
+  return errors;
+};
+
+const addItem = (prop, predicate, prefix = '', props) => {
+  const { onAddDeleteItem, user, webId, fields: { newItem },
+    resetForm } = props;
+  const newValue = `${prefix}${newItem.value}`;
   const item = $rdf.st($rdf.sym(webId), predicate, $rdf.sym(''),
     $rdf.sym(''));
   const array = user[prop];
-  if (array.some((obj) => { return obj.value === newValue; })) return;
 
-  onAddDeleteItem(newValue, item, prop, user.source, array);
+  onAddDeleteItem(newValue, item, prop, user.source, array, null, () => {
+    resetForm();
+  });
 };
 
 const deleteItem = (e, prop, key, props) => {
@@ -26,33 +50,34 @@ const deleteItem = (e, prop, key, props) => {
   e.preventDefault();
   const item = user[prop][key];
   const array = user[prop];
-  array.splice(key, 1);
 
-  onAddDeleteItem(undefined, item, prop, user.source, array);
+  onAddDeleteItem(undefined, item, prop, user.source, array, key);
 };
 
 const renderList = (list, prop, prefix, props) =>
   list.map((item, key) => {
     return (
-      <li
-        style={addInfoStyle.listItem}
-        key={`${key}${prop}`}
-        onClick={(e) => deleteItem(e, prop, key, props)}
-      >
-        <p>
-          {item.value && item.value.replace(prefix, '')}
-          <i
-            style={addInfoStyle.listIcon}
-            className="fa fa-trash"
-            key={`0${key}${prop}`}
-          />
-        </p>
-      </li>
+      item.value &&
+        <li style={addInfoStyle.listItem} key={`${key}${prop}`}>
+          <p>
+            {item.value && item.value.replace(prefix, '')}
+            {item.updating ?
+              <Spinner style={addInfoStyle.spinner} /> :
+              <i
+                style={addInfoStyle.listIcon}
+                className="fa fa-trash"
+                key={`0${key}${prop}`}
+                onClick={(e) => deleteItem(e, prop, key, props)}
+              />
+            }
+          </p>
+        </li>
     );
   });
 
 const AddInfo = props => {
-  const { icon, name, predicate, prefix, prop, type, user } = props;
+  const { icon, name, predicate, prefix, prop, type, user, fields: { newItem },
+    handleSubmit } = props;
 
   return (
     <article style={sharedStyle.leftCard}>
@@ -70,22 +95,28 @@ const AddInfo = props => {
       }
       <form
         style={addInfoStyle.form}
-        onSubmit={(e) => addItem(e, prop, predicate, prefix, props)}
+        onSubmit={handleSubmit(() => addItem(prop, predicate, prefix, props))}
       >
         <Input
           style={addInfoStyle.newInput}
           label={`New ${name}`}
-          name={prop}
           type={type}
           placeholder={`${name}`}
           button={`Add ${name}`}
+          spinner={user[prop].some(itm => itm.updating)}
+          disabled={user[prop].some(itm => itm.updating)}
+          {...newItem}
         />
+        {newItem.touched && newItem.error && !newItem.active &&
+          <p style={sharedStyle.errMsg}>{newItem.error}</p>
+        }
       </form>
     </article>
   );
 };
 
 AddInfo.propTypes = {
+  ...propTypes,
   icon: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   onAddDeleteItem: PropTypes.func.isRequired,
@@ -97,4 +128,8 @@ AddInfo.propTypes = {
   webId: PropTypes.string.isRequired,
 };
 
-export default new Radium(AddInfo);
+export default reduxForm({
+  form: 'AddInfo',
+  fields,
+  validate,
+})(new Radium(AddInfo));

@@ -38,5 +38,6 @@ export default {
     first: 320,
     second: 520,
     third: 730,
+    max: 1350,
   },
 };

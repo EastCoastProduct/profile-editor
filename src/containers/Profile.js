@@ -7,6 +7,7 @@ import Radium from 'radium';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import ShowInfo from '../components/ShowInfo';
+import Spinner from '../components/Spinner';
 import WebId from '../components/WebId';
 
 // Style
@@ -33,67 +34,73 @@ export default class Profile extends Component {
   }
 
   getProfile(nextProps) {
-    const { dispatch, location, profile: { user, error } } =
-      nextProps || this.props;
+    const { dispatch, location: { query: { webId } },
+      profile: { user, errors } } = nextProps || this.props;
 
-    if (location.query.webId && location.query.webId !== user.webId && !error) {
-      dispatch(profileFetch(location.query.webId));
+    if (webId && webId !== user.webId && !errors.get) {
+      dispatch(profileFetch(webId));
     }
   }
 
   render() {
-    const { location, profile: { user, error } } = this.props;
+    const { location, profile: { user, errors } } = this.props;
 
     return (
-      location.query.webId && !error ?
-        user.webId === location.query.webId &&
-          <section>
-            <ProfileCover webId={location.query.webId} user={user} />
-            <div style={profileStyle.halfLeft}>
-              {(user.fullName.value || user.firstName.value ||
-                user.lastName.value || user.nickName.value ||
-                user.gender.value) &&
-                <BasicInfo user={user} />
-              }
-              {user.phones.length > 0 &&
-                <ShowInfo
-                  icon="phone"
-                  list={user.phones}
-                  prefix="tel:"
-                  title="Phones"
-                />
-              }
-              {user.emails.length > 0 &&
-                <ShowInfo
-                  icon="envelope"
-                  list={user.emails}
-                  prefix="mailto:"
-                  title="Emails"
-                />
-              }
-            </div>
-            <div style={profileStyle.halfRight}>
-              {user.blogs.length > 0 &&
-                <ShowInfo icon="rss" list={user.blogs} title="Blogs" />
-              }
-              {user.homepages.length > 0 &&
-                <ShowInfo
-                  icon="globe"
-                  list={user.homepages}
-                  title="Homepages"
-                />
-              }
-              {user.workpages.length > 0 &&
-                <ShowInfo
-                  icon="globe"
-                  list={user.workpages}
-                  title="Workpages"
-                />
-              }
-            </div>
-            <div style={sharedStyle.clearfix}></div>
-          </section> :
-        <WebId error={error} goTo="/" />
+      location.query.webId && !errors.get ?
+        <section>
+          {user.webId === location.query.webId ?
+            <div>
+              <ProfileCover webId={location.query.webId} user={user} />
+              <div style={profileStyle.halfLeft}>
+                {(user.fullName.value || user.firstName.value ||
+                  user.lastName.value || user.nickName.value ||
+                  user.gender.value) &&
+                  <BasicInfo user={user} />
+                }
+                {user.phones.length > 0 &&
+                  <ShowInfo
+                    icon="phone"
+                    list={user.phones}
+                    prefix="tel:"
+                    title="Phones"
+                  />
+                }
+                {user.emails.length > 0 &&
+                  <ShowInfo
+                    icon="envelope"
+                    list={user.emails}
+                    prefix="mailto:"
+                    title="Emails"
+                  />
+                }
+              </div>
+              <div style={profileStyle.halfRight}>
+                {user.blogs.length > 0 &&
+                  <ShowInfo icon="rss" list={user.blogs} title="Blogs" />
+                }
+                {user.homepages.length > 0 &&
+                  <ShowInfo
+                    icon="globe"
+                    list={user.homepages}
+                    title="Homepages"
+                  />
+                }
+                {user.workpages.length > 0 &&
+                  <ShowInfo
+                    icon="globe"
+                    list={user.workpages}
+                    title="Workpages"
+                  />
+                }
+              </div>
+              <div style={sharedStyle.clearfix}></div>
+            </div> :
+            <article style={sharedStyle.card}>
+              <Spinner />
+            </article>
+          }
+        </section> :
+        <WebId formKey="webIdProfile" error={errors.get} goTo="/" />
     );
   }
 }
