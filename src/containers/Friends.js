@@ -1,20 +1,18 @@
 'use strict';
 
-import $rdf from 'rdflib';
+import { rdflib as $rdf, vocab } from 'solid-client';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { profileFetch, profileUpdate, getFriends, paginationChanged,
-  profileUpdateSuccess } from '../actions/profile';
+  profileUpdateAction } from '../actions/profile';
 import _ from 'lodash';
 import appConstants from '../constants/application';
 import Radium from 'radium';
-import Namespaces from '../constants/namespaces';
 import Spinner from '../components/Spinner';
 import FriendItem from '../components/FriendItem';
 import Pagination from '../components/Pagination';
 import FriendsForm from '../components/FriendsForm';
 import WebId from '../components/WebId';
-const { FOAF } = Namespaces;
 const { PAGINATION } = appConstants;
 
 // Style
@@ -84,7 +82,7 @@ export default class Friends extends Component {
 
   addNewFriend(value, cb) {
     const { dispatch, location, profile } = this.props;
-    const item = $rdf.st($rdf.sym(location.query.webId), new FOAF('knows'),
+    const item = $rdf.st($rdf.sym(location.query.webId), vocab.foaf('knows'),
       $rdf.sym(''), $rdf.sym(''));
     const { source, friends } = this.getVariables(profile);
 
@@ -106,7 +104,7 @@ export default class Friends extends Component {
     const { friends } = this.getVariables(profile);
     delete friends[key].data;
 
-    dispatch(profileUpdateSuccess(friends, 'friends'));
+    dispatch(profileUpdateAction(friends, 'friends'));
   }
 
   paginationChanged(page, numOfPages, start, end) {
@@ -177,7 +175,7 @@ export default class Friends extends Component {
             />
           }
         </section> :
-        <WebId formKey="WebIdFriends" error={errors.get} goTo="/friends" />
+        <WebId formKey="WebIdFriends" errorMsg={errors.get} goTo="/friends" />
     );
   }
 }

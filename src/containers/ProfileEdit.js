@@ -1,17 +1,16 @@
 'use strict';
 
+import { vocab } from 'solid-client';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { profileFetch, profileUpdate, profileImageUpload, profileImageDelete }
   from '../actions/profile';
 import Radium from 'radium';
-import Namespaces from '../constants/namespaces';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import AddInfo from '../components/AddInfo';
 import Spinner from '../components/Spinner';
 import WebId from '../components/WebId';
-const { FOAF } = Namespaces;
 
 // Style
 import sharedStyle from '../styles/shared/base';
@@ -110,7 +109,7 @@ export default class ProfileEdit extends Component {
                 icon="phone"
                 name="Phone"
                 onAddDeleteItem={this.addDeleteItem}
-                predicate={new FOAF('phone')}
+                predicate={vocab.foaf('phone')}
                 prefix="tel:"
                 prop="phones"
                 type="tel"
@@ -123,7 +122,7 @@ export default class ProfileEdit extends Component {
                 icon="envelope"
                 name="Email"
                 onAddDeleteItem={this.addDeleteItem}
-                predicate={new FOAF('mbox')}
+                predicate={vocab.foaf('mbox')}
                 prefix="mailto:"
                 prop="emails"
                 type="email"
@@ -136,7 +135,7 @@ export default class ProfileEdit extends Component {
                 icon="rss"
                 name="Blog"
                 onAddDeleteItem={this.addDeleteItem}
-                predicate={new FOAF('weblog')}
+                predicate={vocab.foaf('weblog')}
                 prop="blogs"
                 type="url"
                 user={user}
@@ -148,7 +147,7 @@ export default class ProfileEdit extends Component {
                 icon="globe"
                 name="Homepage"
                 onAddDeleteItem={this.addDeleteItem}
-                predicate={new FOAF('homepage')}
+                predicate={vocab.foaf('homepage')}
                 prop="homepages"
                 type="url"
                 user={user}
@@ -160,7 +159,7 @@ export default class ProfileEdit extends Component {
                 icon="globe"
                 name="Workpage"
                 onAddDeleteItem={this.addDeleteItem}
-                predicate={new FOAF('workplaceHomepage')}
+                predicate={vocab.foaf('workplaceHomepage')}
                 prop="workpages"
                 type="url"
                 user={user}
@@ -172,7 +171,7 @@ export default class ProfileEdit extends Component {
             </article>
           }
         </section> :
-        <WebId formKey="webIdEdit" error={errors.get} goTo="/edit" />
+        <WebId formKey="webIdEdit" errorMsg={errors.get} goTo="/edit" />
     );
   }
 }

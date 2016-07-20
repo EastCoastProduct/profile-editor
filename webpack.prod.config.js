@@ -40,10 +40,15 @@ module.exports = {
         loader: 'babel-loader',
         include: path.join(__dirname, 'src'),
         exclude: /node_modules/
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
       }
     ],
   },
   externals:[{
-    xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+    xhr2: 'XMLHttpRequest',
+    xmlhttprequest: 'XMLHttpRequest'
   }],
 };

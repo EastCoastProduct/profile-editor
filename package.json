@@ -31,8 +31,8 @@
     "html-webpack-plugin": "^2.20.0",
     "mocha": "^2.5.3",
     "nock": "^8.0.0",
-    "react-addons-test-utils": "^15.2.1",
     "redux-mock-store": "^1.1.2",
+    "json-loader": "^0.5.4",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.10.0"
@@ -44,9 +44,7 @@
     "express": "^4.13.4",
     "key-mirror": "^1.0.1",
     "lodash": "^4.13.1",
-    "parse-link-header": "^0.4.1",
     "radium": "^0.17.1",
-    "rdflib": "^0.7.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
@@ -54,7 +52,7 @@
     "redux": "^3.5.2",
     "redux-form": "^5.2.5",
     "redux-thunk": "^2.1.0",
-    "validator": "^5.4.0",
-    "whatwg-fetch": "^1.0.0"
+    "solid-client": "^0.20.0",
+    "validator": "^5.4.0"
   }
 }

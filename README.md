@@ -21,12 +21,18 @@ And open http://localhost:3000/
 
 ## TODO
 
-- Validation (using redux-forms)
+- errors (errors from requests are not showing up, spinners have issues in that case)
 
-- use solid.js
+- tests (some tests are written, not fully covered)
 
-- tests
+## NOTES
+
+- warrings in console due to React 15, to fix them we are waiting for redux-form version 6 to get out and radium to fix it and relese new version
+
+- sometimes buttons stay hovered although they shouldn't, this is radium bug
+
+- for some users friends will never show up, this is due to multiple errors while trying to fetch users friends, it will be changed in the future how it works
 
 ## ISSUES
 
-- Authentications isn't working, User header is always empty
+- Authentications isn't working, User header is always empty (apparently it's a Chrome bug)
