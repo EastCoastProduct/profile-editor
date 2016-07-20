@@ -6,7 +6,7 @@
     "start": "node server.js",
     "prod": "node prod.js",
     "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js --config ./webpack.prod.config.js --progress --profile --colors",
-    "test": "mocha --compilers js:babel-core/register src/**/*.test.js"
+    "test": "mocha .setup.test.js src/**/*.test.js "
   },
   "author": "ECP",
   "license": "MIT",
