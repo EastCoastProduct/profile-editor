@@ -108,8 +108,8 @@ class Profile extends Component {
 const comp = {
   ProfileTest: Profile,
   Profile: connect(state => ({
-    profile: state.profile
-  }))(Radium(Profile))
+    profile: state.profile,
+  }))(Radium(Profile)),
 };
 
 export default comp;
