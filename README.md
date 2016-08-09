@@ -77,7 +77,9 @@ First command bundles files for production and puts them to dist folder, those j
     │   ├── routes               # React Router setup which contains all the routes and is child component of Redux's Provider
     │   ├── store                # store setup, part of Redux ecosystem
     │   ├── styles               # Radium.js inline styles
-    │   └── utils                # validator for Redux Form but any other JS files that don't fall into upper folders should go here
+    │   ├── utils                # validator for Redux Form but any other JS files that don't fall into upper folders should go here
+    │   ├── index.js             # entry point for our React/Redux application
+    │   └── index.tpl.html       # template html from which html-webpack-plugin creates output html file including hashed JS files
     ├── .babelrc                 # babel configuration including some ES7 experimental syntax
     ├── .eslintrc                # eslint configuration based on airbnb setup
     ├── .gitignore               # ignore setup for git
@@ -105,11 +107,17 @@ Actions are a place where we trigger our HTTP requests for which we use a solid-
 
 Other files outside src folder in root directory hold other configuration to our project. We use webpack to bundle files and we use babel to transpile ES6 and ES7 code to ES5 to allow us to use latest modern syntax and still write code which would work in older browsers. We also lint our code using airbnb rules to hold to a certain standard in code structure and syntax. We also have 2 express files one to run a project in development mode and other to run it in production and serve minified bundled files. While in development mode it is possible to install redux dev tools extension for Chrome to be able to track state changes and actions dispatched.
 
+## TESTS
+
+We have few tests for the application, just as a show point on how to test certain parts of the React/Redux ecosystem. Redux application generally comprises of actions, dumb and smart components, reducers, routes and store. Tests cover some of the basic parts of the application to show how different parts could be tested using mocha and chai. To run tests all that is needed is to run command:
+
+    npm test
+
 ## TODO
 
 - errors (errors from requests are not showing up, spinners have issues in that case)
 
-- tests
+- tests (some tests are written, not fully covered)
 
 ## ISSUES
 

@@ -13,11 +13,7 @@ import WebId from '../components/WebId';
 // Style
 import sharedStyle from '../styles/shared/base';
 import profileStyle from '../styles/containers/profile';
-//
-// @connect(state => ({
-//   profile: state.profile,
-// }))
-// @Radium
+
 class Profile extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -105,11 +101,10 @@ class Profile extends Component {
   }
 }
 
-const comp = {
+export default {
   ProfileTest: Profile,
   Profile: connect(state => ({
     profile: state.profile,
-  }))(Radium(Profile)),
+  }))(new Radium(Profile)),
 };
 
-export default comp;

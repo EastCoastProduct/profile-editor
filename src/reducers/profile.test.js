@@ -36,11 +36,12 @@ const initialState = {
     workpages: [],
   },
 };
+
 let dummyUser = {
   user: {
     bcgImg: {},
     blogs: [],
-    emails: ['test@email.com'],
+    emails: [ 'test@email.com' ],
     firstName: 'Jhon',
     friends: [],
     fullName: 'Jhon Doe',
@@ -56,28 +57,33 @@ let dummyUser = {
     workpages: [],
   }
 };
+
 let dummyUserFriends = Object.assign({}, dummyUser);
+
 dummyUserFriends.user.friends = [
-  '1. friend', '2. friends', '3. friend', '4.friend', '5 friend', '6 friend',
+  '1. friend', '2. friend', '3. friend', '4.friend', '5 friend', '6 friend',
   '7 friend', '8 friend'
 ];
+
 let dummyUserPagination = Object.assign({}, initialState);
+
 dummyUserPagination.pagination = {
   end: 5,
   numOfPages: 15,
   page: 1,
   start: 1,
 };
+
 let resetProfileFailed = Object.assign({}, initialState);
+
 resetProfileFailed.errors = {
   get: 'get error',
   update: 'update error',
 };
 
 describe('Profile reducer', () => {
-  
+
   it('should return the initial state', () => {
-    
     var newStore = reducer(undefined, PROFILE_GET_SUCCESS);
 
     expect(newStore).to.eql({
@@ -111,6 +117,7 @@ describe('Profile reducer', () => {
       },
     });
   });
+
   it('should return dummy profile', () => {
     var newStore = reducer(initialState, {
       type: PROFILE_GET_SUCCESS,
@@ -129,9 +136,10 @@ describe('Profile reducer', () => {
         page: null,
         start: null,
       },
-      user: dummyUser.user
+      user: dummyUser.user,
     });
   });
+
   it('should return user friends', () => {
     var newStore = reducer(dummyUser, {
       type: FRIENDS_GET_SUCCESS,
@@ -139,9 +147,10 @@ describe('Profile reducer', () => {
     });
 
     expect(newStore).to.eql({
-      user: dummyUserFriends.user
+      user: dummyUserFriends.user,
     });
   });
+
   it('should change pagination', () => {
     var newStore = reducer(initialState, {
       type: PAGINATION_CHANGED,
@@ -157,6 +166,7 @@ describe('Profile reducer', () => {
       user: dummyUserPagination.user,
     });
   });
+
   it('should reset profile success', () => {
     var newStore = reducer(dummyUser, {
       type: PROFILE_RESET,
@@ -164,6 +174,7 @@ describe('Profile reducer', () => {
 
     expect(newStore).to.eql(initialState);
   });
+
   it('should failed to reset profile', () => {
     var newStore = reducer({}, {
       type: PROFILE_ACTION_FAILED,

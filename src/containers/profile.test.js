@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import {expect} from 'chai';
-import {shallow, render} from 'enzyme';
+import { expect } from 'chai';
+import { shallow, render } from 'enzyme';
 import Profile from './Profile';
 
 const ProfileTest = Profile.ProfileTest;
@@ -13,7 +13,11 @@ const validProps = Object.assign({}, dispatchObj, {
     get: null,
     update: null,
   },
-  location: { query: {webId: 'testData'}},
+  location: {
+    query: {
+      webId: 'testData',
+    },
+  },
   profile: {
     errors: {
       update: null,
@@ -36,20 +40,17 @@ const validProps = Object.assign({}, dispatchObj, {
       profileImg: {},
       source: {},
       webId: 'testData',
-      workpages: []
-    }
-  }
+      workpages: [],
+    },
+  },
 });
 const emptyProps = Object.assign({}, dispatchObj, {
-  profile: {}
+  profile: {},
 });
 
 describe('Profile component', () => {
-
   it('should render the component', () => {
     const wrapper = shallow(<ProfileTest {...validProps} />);
-    expect(wrapper
-      .find('div')
-    ).to.have.length(4);
+    expect(wrapper.find('div')).to.have.length(4);
   });
 });
