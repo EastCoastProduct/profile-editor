@@ -77,12 +77,13 @@ First command bundles files for production and puts them to dist folder, those j
     │   ├── routes               # React Router setup which contains all the routes and is child component of Redux's Provider
     │   ├── store                # store setup, part of Redux ecosystem
     │   ├── styles               # Radium.js inline styles
-    │   ├── utils                # validator for Redux Form but any other JS files that don't fall into upper folders should go here
+    │   ├── utils                # validator for Redux Form and uniqueId generator but any other JS files that don't fall into upper folders should go here
     │   ├── index.js             # entry point for our React/Redux application
     │   └── index.tpl.html       # template html from which html-webpack-plugin creates output html file including hashed JS files
     ├── .babelrc                 # babel configuration including some ES7 experimental syntax
     ├── .eslintrc                # eslint configuration based on airbnb setup
     ├── .gitignore               # ignore setup for git
+    ├── .setup.test.js           # setup file to run mocha tests
     ├── package.json             # list of all dependencies
     ├── Procfile                 # heroku deploy setup
     ├── prod.js                  # express server for production setup
@@ -91,7 +92,7 @@ First command bundles files for production and puts them to dist folder, those j
     ├── webpack.config.js        # webpack setup for development, used when running development
     └── webpack.prod.config.js   # webpack setup for production, used when building dist folder
 
-Most important part of the structure is src folder which contains all the code for our application. We used Redux to hold and manage our application state and React as view part to render dynamic HTML. We use heavily ES6 and experimental ES7 JS code and write our components as classes.
+Most important part of the structure is the src folder which contains all the code for our application. We used Redux to hold and manage our application state and React as view part to render dynamic HTML. We use heavily ES6 and experimental ES7 JS code and write our components as classes.
 
 Redux Form gives an easy and intuitive way to validate our forms and inputs. Mostly, we try to make as many reusable dumb components (stateless) as possible and share them across application, also it makes it easier to test components that get values passed through props and that have no direct way of changing app state. To connect our routes with a state in store we write smart components (containers folder) where we have one container component for designated route which gets access to part of the state and dispatches actions to change the state. After state gets changed all components inside container get re-rendered if needed.
 
@@ -113,6 +114,8 @@ We have few tests for the application, just as a show point on how to test certa
 
     npm test
 
+At the moment we have 8 passing tests in total. We tested one action, one smart component (container) and one reducer.
+
 ## TODO
 
 - errors (errors from requests are not showing up, spinners have issues in that case)
@@ -123,7 +126,7 @@ We have few tests for the application, just as a show point on how to test certa
 
 - Authentication isn't working, User header is always empty (apparently it's a Chrome bug)
 
-- Warnings in console due to React 15, to fix them we are waiting for redux-form version 6 to get out and Radium.js to fix it and release a new version
+- Warnings in console due to React 15, to fix them we are waiting for redux-form version 6 to get out to fix it
 
 - Sometimes buttons stay hovered although they shouldn't, this is Radium.js bug that is fixed but we are waiting for the new version to be released to remove existing bug
 
@@ -132,3 +135,5 @@ We have few tests for the application, just as a show point on how to test certa
 - For some users friends will never show up, this is due to multiple origin errors that could happen while trying to fetch users friends (seems to be an issue in rdflib), it will be changed how it works in the future
 
 - Minification of JS files when running command *npm build* isn't working as expected, we had to turn off mangle option which changes the names of variables and makes minified files even smaller, issue is suspected to be due to rdflib which breaks when mangle option is turned on
+
+- When running *npm start* deprecation note will pop up in the terminal. This is due to eslint-config-airbnb module that hasn't yet fixed this issue https://github.com/airbnb/javascript/issues/978

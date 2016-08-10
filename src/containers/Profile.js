@@ -2,8 +2,8 @@
 
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { profileFetch } from '../actions/profile';
 import Radium from 'radium';
+import { profileFetch } from '../actions/profile';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import ShowInfo from '../components/ShowInfo';
@@ -89,7 +89,7 @@ class Profile extends Component {
                   />
                 }
               </div>
-              <div style={sharedStyle.clearfix}></div>
+              <div style={sharedStyle.clearfix} />
             </div> :
             <article style={sharedStyle.card}>
               <Spinner />

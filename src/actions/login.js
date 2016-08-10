@@ -3,6 +3,7 @@
 import solid from 'solid-client';
 import Actions from '../constants/actions';
 import AppConstants from '../constants/application';
+
 const { LOGIN_FETCHING, LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT_SUCCESS } = Actions;
 const { AUTH_ENDPOINT } = AppConstants;
 

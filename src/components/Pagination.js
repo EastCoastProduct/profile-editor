@@ -30,9 +30,9 @@ export default class Pagination extends Component {
   calculateNewProps(currentPage, itemsPerPage, total) {
     const newNumOfPages = Math.ceil(total / itemsPerPage);
     const newPage = currentPage <= newNumOfPages ? currentPage : newNumOfPages;
-    let newStart = 1 + (newPage - 1) * itemsPerPage;
+    let newStart = 1 + ((newPage - 1) * itemsPerPage);
     newStart = newStart > 0 ? newStart : 0;
-    let newEnd = itemsPerPage + (newPage - 1) * itemsPerPage;
+    let newEnd = itemsPerPage + ((newPage - 1) * itemsPerPage);
     newEnd = newEnd < total ? newEnd : total;
     return { newPage, newNumOfPages, newStart, newEnd };
   }

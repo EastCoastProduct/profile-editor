@@ -1,6 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
+
 const { colors } = variables;
 
 export default {

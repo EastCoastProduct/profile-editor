@@ -19,6 +19,8 @@
   "rules": {
     "strict": 0,
     "max-len": ["error", 80, 2],
-    "arrow-body-style": 0
+    "arrow-body-style": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "no-prototype-builtins": 0,
   }
 }

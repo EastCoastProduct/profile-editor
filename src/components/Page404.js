@@ -3,12 +3,13 @@
 import React from 'react';
 import { Link as RRLink, IndexLink as RRIndexLink } from 'react-router';
 import Radium from 'radium';
-const Link = new Radium(RRLink);
-const IndexLink = new Radium(RRIndexLink);
 
 // Style
 import sharedStyle from '../styles/shared/base';
 import page404Style from '../styles/components/page404';
+
+const Link = new Radium(RRLink);
+const IndexLink = new Radium(RRIndexLink);
 
 const Page404 = () =>
   <article style={sharedStyle.card}>

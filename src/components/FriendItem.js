@@ -4,11 +4,12 @@ import React, { PropTypes } from 'react';
 import { Link as RRLink } from 'react-router';
 import Radium from 'radium';
 import Button from '../components/Button';
-const Link = new Radium(RRLink);
 
 // Style
 import sharedStyle from '../styles/shared/base';
 import friendItemStyle from '../styles/components/friendItem';
+
+const Link = new Radium(RRLink);
 
 const FriendItem = ({ data, index, onDelete, onReload }) =>
   <li style={[friendItemStyle.listItem, data.error && friendItemStyle.errItem]}>

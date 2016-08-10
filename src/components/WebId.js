@@ -5,7 +5,6 @@ import { withRouter, Link as RRLink } from 'react-router';
 import { reduxForm, propTypes } from 'redux-form';
 import Radium from 'radium';
 import Input from './Input';
-const Link = new Radium(RRLink);
 
 // Styles
 import sharedStyle from '../styles/shared/base';
@@ -13,6 +12,7 @@ import webIdStyle from '../styles/components/webId';
 
 // Validation
 import { isRequired, isWebId } from '../utils/validator';
+
 const fields = ['webId'];
 const validate = values => {
   const errors = {};
@@ -25,10 +25,12 @@ const changeRoute = (goTo, router, webId) => {
   router.push({ pathname: goTo || '/', query: { webId } });
 };
 
+const Link = new Radium(RRLink);
+
 const WebId = ({ errorMsg, goTo, router, fields: { webId }, handleSubmit }) =>
   <section style={sharedStyle.leftCard}>
     <h3 style={sharedStyle.heading}>
-      <i style={sharedStyle.icon} className="fa fa-info"></i>
+      <i style={sharedStyle.icon} className="fa fa-info" />
       WebID
     </h3>
     <p style={[sharedStyle.infoMsg, webIdStyle.info]}>

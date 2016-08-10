@@ -1,7 +1,7 @@
 'use strict';
 
 import { expect } from 'chai';
-import * as appData from './app'
+import appData from './app'
 import Actions from '../constants/actions';
 
 describe('app action', () => {
@@ -11,7 +11,7 @@ describe('app action', () => {
       type: Actions.MENU_TOGGLE,
       toggle: toggle,
     };
-    expect(appData.menuToggle(toggle)).to.eql(expectedAction);
+    expect(appData(toggle)).to.eql(expectedAction);
   });
 
 });

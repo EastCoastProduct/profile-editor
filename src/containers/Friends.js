@@ -3,21 +3,22 @@
 import { rdflib as $rdf, vocab } from 'solid-client';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Radium from 'radium';
+import _ from 'lodash';
 import { profileFetch, profileUpdate, getFriends, paginationChanged,
   profileUpdateAction } from '../actions/profile';
-import _ from 'lodash';
 import appConstants from '../constants/application';
-import Radium from 'radium';
 import Spinner from '../components/Spinner';
 import FriendItem from '../components/FriendItem';
 import Pagination from '../components/Pagination';
 import FriendsForm from '../components/FriendsForm';
 import WebId from '../components/WebId';
-const { PAGINATION } = appConstants;
 
 // Style
 import sharedStyle from '../styles/shared/base';
 import friendsStyle from '../styles/containers/friends';
+
+const { PAGINATION } = appConstants;
 
 @connect(state => ({
   profile: state.profile,
@@ -123,7 +124,7 @@ export default class Friends extends Component {
           <FriendItem
             data={friend.data}
             key={index}
-            index={index + (profile.pagination.page - 1) * PAGINATION}
+            index={index + ((profile.pagination.page - 1) * PAGINATION)}
             onDelete={this.deleteFriend}
             onReload={this.reloadFriend}
           />

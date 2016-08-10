@@ -3,9 +3,9 @@
 import { vocab } from 'solid-client';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Radium from 'radium';
 import { profileFetch, profileUpdate, profileImageUpload, profileImageDelete }
   from '../actions/profile';
-import Radium from 'radium';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import AddInfo from '../components/AddInfo';
@@ -56,7 +56,7 @@ export default class ProfileEdit extends Component {
     e.preventDefault();
     const file = e.target.files[0];
 
-    if (!!file) {
+    if (file) {
       dispatch(profileImageUpload(file, item, prop, source));
     }
   }

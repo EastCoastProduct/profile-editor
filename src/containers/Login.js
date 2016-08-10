@@ -3,8 +3,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { loginFetch } from '../actions/login';
 import Radium from 'radium';
+import { loginFetch } from '../actions/login';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 

@@ -1,7 +1,8 @@
 'use strict';
 
-import variables from '../base/variables';
 import color from 'color';
+import variables from '../base/variables';
+
 const { colors, sizes, transition } = variables;
 
 const mixin = {
