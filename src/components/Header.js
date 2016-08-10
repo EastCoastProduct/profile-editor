@@ -8,7 +8,7 @@ import Navigation from './Navigation';
 import headerStyle from '../styles/components/header';
 
 const Header = props => {
-  const { loginWebId, onLogout, onToggleMenu, showMenu, title, view, webId } =
+  const { loginWebId, onLogout, onToggleMenu, showMenu, title, webId } =
     props;
 
   return (
@@ -25,7 +25,6 @@ const Header = props => {
           loginWebId={loginWebId}
           onClick={() => onToggleMenu(false)}
           onLogout={onLogout}
-          view={view}
           webId={webId}
         />
       }
@@ -39,7 +38,6 @@ Header.propTypes = {
   onToggleMenu: PropTypes.func.isRequired,
   showMenu: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  view: PropTypes.bool,
   webId: PropTypes.string,
 };
 

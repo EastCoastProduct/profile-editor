@@ -1,7 +1,8 @@
 'use strict';
 
-import variables from './variables';
 import color from 'color';
+import variables from './variables';
+
 const { colors, fonts, sizes } = variables;
 
 export default {

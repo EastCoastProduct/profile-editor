@@ -1,6 +1,7 @@
 'use strict';
 
 import Actions from '../constants/actions';
+
 const { LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT_SUCCESS, LOGIN_FETCHING } = Actions;
 
 const initialState = {

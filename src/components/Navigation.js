@@ -3,49 +3,48 @@
 import React, { PropTypes } from 'react';
 import { Link as RRLink, IndexLink as RRIndexLink } from 'react-router';
 import Radium from 'radium';
-const Link = new Radium(RRLink);
-const IndexLink = new Radium(RRIndexLink);
 
 // Style
 import navStyle from '../styles/components/navigation';
+
+const IndexLink = new Radium(RRIndexLink);
+const Link = new Radium(RRLink);
 
 const logout = (e, onLogout) => {
   e.preventDefault();
   onLogout();
 };
 
-const Navigation = ({ loginWebId, onClick, onLogout, view, webId }) =>
+const Navigation = ({ loginWebId, onClick, onLogout, webId }) =>
   <div style={navStyle.overlay} onClick={onClick}>
     <nav style={navStyle.navigation}>
       <ul>
-        {view ?
-          <li>
-            <Link
-              style={navStyle.navItem}
-              to={{ pathname: '/edit', query: { webId } }}
-              key="0"
-              activeStyle={navStyle.navActive}
-            >
-              <i style={navStyle.navIcon} className="fa fa-user" />
-              <span style={navStyle.navText}>
-                Edit profile
-              </span>
-            </Link>
-          </li> :
-          <li>
-            <IndexLink
-              style={navStyle.navItem}
-              to={{ pathname: '/', query: { webId } }}
-              key="1"
-              activeStyle={navStyle.navActive}
-            >
-              <i style={navStyle.navIcon} className="fa fa-user" />
-              <span style={navStyle.navText}>
-                View Profile
-              </span>
-            </IndexLink>
-          </li>
-        }
+        <li>
+          <IndexLink
+            style={navStyle.navItem}
+            to={{ pathname: '/', query: { webId } }}
+            key="1"
+            activeStyle={navStyle.navActive}
+          >
+            <i style={navStyle.navIcon} className="fa fa-user" />
+            <span style={navStyle.navText}>
+              View Profile
+            </span>
+          </IndexLink>
+        </li>
+        <li>
+          <Link
+            style={navStyle.navItem}
+            to={{ pathname: '/edit', query: { webId } }}
+            key="0"
+            activeStyle={navStyle.navActive}
+          >
+            <i style={navStyle.navIcon} className="fa fa-user" />
+            <span style={navStyle.navText}>
+              Edit profile
+            </span>
+          </Link>
+        </li>
         <li>
           <Link
             style={navStyle.navItem}
@@ -72,7 +71,7 @@ const Navigation = ({ loginWebId, onClick, onLogout, view, webId }) =>
             </span>
           </Link>
         </li>
-        {!!loginWebId ?
+        {loginWebId ?
           <li>
             <a
               style={navStyle.navItem}
@@ -108,7 +107,6 @@ Navigation.propTypes = {
   loginWebId: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  view: PropTypes.bool,
   webId: PropTypes.string,
 };
 

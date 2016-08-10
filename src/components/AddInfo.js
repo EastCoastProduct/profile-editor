@@ -14,6 +14,7 @@ import addInfoStyle from '../styles/components/addInfo';
 // Validation
 import { isRequired, isPhone, isEmail, isUrl, isDuplicate }
   from '../utils/validator';
+
 const fields = ['newItem'];
 const validate = (values, { name, prefix, prop, type, user }) => {
   const errors = {};

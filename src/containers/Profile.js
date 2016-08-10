@@ -2,8 +2,8 @@
 
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { profileFetch } from '../actions/profile';
 import Radium from 'radium';
+import { profileFetch } from '../actions/profile';
 import ProfileCover from '../components/ProfileCover';
 import BasicInfo from '../components/BasicInfo';
 import ShowInfo from '../components/ShowInfo';
@@ -14,11 +14,7 @@ import WebId from '../components/WebId';
 import sharedStyle from '../styles/shared/base';
 import profileStyle from '../styles/containers/profile';
 
-@connect(state => ({
-  profile: state.profile,
-}))
-@Radium
-export default class Profile extends Component {
+class Profile extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
@@ -93,7 +89,7 @@ export default class Profile extends Component {
                   />
                 }
               </div>
-              <div style={sharedStyle.clearfix}></div>
+              <div style={sharedStyle.clearfix} />
             </div> :
             <article style={sharedStyle.card}>
               <Spinner />
@@ -104,3 +100,11 @@ export default class Profile extends Component {
     );
   }
 }
+
+export default {
+  ProfileTest: Profile,
+  Profile: connect(state => ({
+    profile: state.profile,
+  }))(new Radium(Profile)),
+};
+

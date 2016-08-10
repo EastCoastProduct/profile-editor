@@ -31,7 +31,7 @@ const renderList = (list, prefix) =>
 const ShowInfo = ({ icon, list, prefix, title }) =>
   <article style={sharedStyle.leftCard}>
     <h3 style={sharedStyle.heading}>
-      <i style={sharedStyle.icon} className={`fa fa-${icon}`}></i>
+      <i style={sharedStyle.icon} className={`fa fa-${icon}`} />
       {title}
     </h3>
     <ul>

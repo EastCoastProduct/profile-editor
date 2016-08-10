@@ -1,6 +1,7 @@
 'use strict';
 
 import Actions from '../constants/actions';
+
 const { MENU_TOGGLE } = Actions;
 
 const initialState = {

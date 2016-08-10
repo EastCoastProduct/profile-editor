@@ -21,18 +21,19 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
     {edit && !user.bcgImg.updating &&
       <form style={profileCoverStyle.coverForm}>
         {!!user.bcgImg.value &&
-          <label
+          <span
             style={profileCoverStyle.trashCoverBtn}
             onClick={(e) => onDelete(e, user.bcgImg, 'bcgImg')}
             key="0"
           >
-            <i className="fa fa-trash"></i>
-          </label>
+            <i className="fa fa-trash" />
+          </span>
         }
-        <label style={profileCoverStyle.coverBtn} key="1">
+        <label style={profileCoverStyle.coverBtn} key="1" htmlFor="cover">
           Change Cover
           <input
             style={profileCoverStyle.file}
+            id="cover"
             type="file"
             accept="image/*"
             onChange={(e) => onImage(e, user.bcgImg, 'bcgImg')}
@@ -49,7 +50,11 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
         }
         {edit && !user.profileImg.updating &&
           <form style={profileCoverStyle.profileForm}>
-            <label style={profileCoverStyle.profileBtn} key="2">
+            <label
+              style={profileCoverStyle.profileBtn}
+              key="2"
+              htmlFor="profile"
+            >
               <i
                 style={profileCoverStyle.cameraIcon}
                 className="fa fa-camera"
@@ -57,19 +62,20 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
               Change Profile
               <input
                 style={profileCoverStyle.file}
+                id="profile"
                 type="file"
                 accept="image/*"
                 onChange={(e) => onImage(e, user.profileImg, 'profileImg')}
               />
             </label>
             {!!user.profileImg.value &&
-              <label
+              <span
                 style={profileCoverStyle.trashProfileBtn}
                 onClick={(e) => onDelete(e, user.profileImg, 'profileImg')}
                 key="3"
               >
-                <i className="fa fa-trash"></i>
-              </label>
+                <i className="fa fa-trash" />
+              </span>
             }
           </form>
         }
@@ -85,9 +91,11 @@ const ProfileCover = ({ edit, onDelete, onImage, user, webId }) =>
       }
       <a
         style={profileCoverStyle.linkAnchor}
-        href={webId} target="_blank"
+        href={webId}
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <i style={profileCoverStyle.linkIcon} className="fa fa-link"></i>
+        <i style={profileCoverStyle.linkIcon} className="fa fa-link" />
         {webId}
       </a>
     </div>

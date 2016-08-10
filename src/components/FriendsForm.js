@@ -11,6 +11,7 @@ import friendsFormStyle from '../styles/components/friendsForm';
 
 // Validation
 import { isRequired, isWebId, hasFriend } from '../utils/validator';
+
 const fields = ['friendId'];
 const validate = (values, { user: { friends } }) => {
   const errors = {};

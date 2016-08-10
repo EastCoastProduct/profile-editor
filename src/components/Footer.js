@@ -6,7 +6,7 @@ import Radium from 'radium';
 // Style
 import footerStyle from '../styles/components/footer';
 
-const getYear = () => (new Date).getFullYear();
+const getYear = () => (new Date()).getFullYear();
 
 const Footer = () =>
   <footer style={footerStyle.base}>
@@ -15,11 +15,13 @@ const Footer = () =>
       <a
         style={footerStyle.tracker}
         target="_blank"
+        rel="noopener noreferrer"
         href="https://github.com/EastCoastProduct/profile-editor"
       >Issue Tracker</a>
       <a
         style={footerStyle.github}
         target="_blank"
+        rel="noopener noreferrer"
         href="https://github.com/EastCoastProduct/profile-editor/issues"
       >GitHub</a>
     </p>

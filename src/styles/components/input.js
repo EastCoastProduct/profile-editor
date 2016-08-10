@@ -1,6 +1,7 @@
 'use strict';
 
 import variables from '../base/variables';
+
 const { breakpoints, colors, sizes } = variables;
 
 const mixin = {
@@ -29,10 +30,7 @@ export default {
     ...mixin.newInput,
     borderRadius: `${sizes.radius}px 0 0 ${sizes.radius}px`,
     width: '80%',
-    [`@media (min-width: ${breakpoints.first}px)`]: {
-      width: '100%',
-    },
-    [`@media (min-width: ${breakpoints.second}px)`]: {
+    [`@media (max-width: ${breakpoints.third}px)`]: {
       width: 'calc(100% - 170px)',
     },
   },
@@ -42,10 +40,7 @@ export default {
     fontWeight: 'bold',
     padding: 13.5,
     width: '20%',
-    [`@media (max-width: ${breakpoints.second}px)`]: {
-      width: 'auto',
-    },
-    [`@media (min-width: ${breakpoints.second}px)`]: {
+    [`@media (max-width: ${breakpoints.third}px)`]: {
       width: 170,
     },
   },

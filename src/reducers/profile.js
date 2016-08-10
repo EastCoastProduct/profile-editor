@@ -1,6 +1,7 @@
 'use strict';
 
 import Actions from '../constants/actions';
+
 const { PROFILE_GET_SUCCESS, PROFILE_UPDATE, PROFILE_RESET,
   PROFILE_ACTION_FAILED, FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 

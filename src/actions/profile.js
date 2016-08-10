@@ -5,6 +5,7 @@ import path from 'path';
 import _ from 'lodash';
 import Actions from '../constants/actions';
 import appConstants from '../constants/application';
+
 const { PROFILE_GET_SUCCESS, PROFILE_UPDATE, PROFILE_RESET,
   PROFILE_ACTION_FAILED, FRIENDS_GET_SUCCESS, PAGINATION_CHANGED } = Actions;
 const { TIMEOUT } = appConstants;
@@ -168,7 +169,7 @@ function updatingDispatch(dispatch, st, update, value, prop, array, arrayKey) {
   newS.updating = update;
   if (array) {
     let newArray;
-    if (!!value) {
+    if (value) {
       newArray = array.concat(newS);
     } else if (update) {
       newArray = _.cloneDeep(array);
@@ -198,7 +199,7 @@ export function profileUpdate(value, item, prop, source, array, arrayKey, cb) {
       patchUri = source.uri;
     }
 
-    if (!!value) {
+    if (value) {
       newS.object[itemProp] = newS.value = value;
       newS.why.uri = source.uri;
       newTriples.push(newS.toNT());

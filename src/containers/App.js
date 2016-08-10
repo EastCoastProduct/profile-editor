@@ -3,11 +3,11 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { menuToggle } from '../actions/app';
-import { logout } from '../actions/login';
-import { profileReset } from '../actions/profile';
 import _ from 'lodash';
 import Radium, { Style, StyleRoot } from 'radium';
+import menuToggle from '../actions/app';
+import { logout } from '../actions/login';
+import { profileReset } from '../actions/profile';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -15,6 +15,7 @@ import Footer from '../components/Footer';
 import normalize from '../styles/base/normalize';
 import defaults from '../styles/base/defaults';
 import sharedStyle from '../styles/shared/base';
+
 const globalStyles = _.merge(normalize, defaults);
 
 @connect(state => ({
@@ -63,8 +64,10 @@ export default class App extends Component {
     const { location, login, router } = nextProps || this.props;
 
     if (login.webId && !location.query.webId) {
-      router.replace({ pathname: location.pathname, query: { webId:
-        login.webId } });
+      router.replace({
+        pathname: location.pathname,
+        query: { webId: login.webId },
+      });
     }
   }
 
@@ -86,7 +89,6 @@ export default class App extends Component {
             onToggleMenu={this.onToggleMenu}
             showMenu={app.showMenu}
             title={children.props.route.title}
-            view={children.props.route.view}
             webId={location.query.webId}
             loginWebId={login.webId}
           />

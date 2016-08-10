@@ -5,11 +5,12 @@ import Radium from 'radium';
 import AppConstants from '../constants/application';
 import Input from '../components/Input';
 import Select from '../components/Select';
-const { GENDER_OPTIONS } = AppConstants;
 
 // Styles
 import sharedStyle from '../styles/shared/base';
 import basicInfoStyle from '../styles/components/basicInfo';
+
+const { GENDER_OPTIONS } = AppConstants;
 
 const BasicInfo = ({ edit, onUpdate, user }) =>
   <article style={sharedStyle.leftCard}>

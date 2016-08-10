@@ -21,6 +21,7 @@ if (process.env.NODE_ENV === 'production') {
     module.hot.accept('../reducers', () => {
       // eslint-disable-next-line global-require
       const nextRootReducer = require('../reducers').default;
+
       createStoreWithMiddleware.replaceReducer(nextRootReducer);
     });
   }
